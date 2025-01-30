@@ -1,8 +1,6 @@
 #include <debug.h>
 #include "tm1637.h"
 
-#define TM1637_BIT_DELAY 5
-
 #define TM1637_WRITE_DATA_TO_DISPLAY 0x40
 #define TM1637_REGISTER_ADDRESS 0xC0
 #define TM1637_DISPLAY_CONTROL 0x80
@@ -126,4 +124,23 @@ void tm1637_write_segments(const uint8_t *segments) {
 void tm1637_set_brightness(uint8_t level) {
 
   tm1637_brightness = 0x08 | (level & 0x07);
+}
+
+/**
+ * Convert byte to digit
+ * 
+ * @param value 
+ * @return digit
+ */
+uint8_t tm1637_toDigit(uint8_t value) {
+  return tm1637_digits[value];
+}
+
+/**
+ * Get dot
+ * 
+ * @return uint8_t 
+ */
+uint8_t tm1637_getDot() {
+  return tm1637_dot;
 }
