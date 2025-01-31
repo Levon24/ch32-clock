@@ -5,6 +5,25 @@
  extern "C" {
 #endif 
 
+/* Defined enums */
+enum _menu {
+  time, // 
+  date,
+  alarm
+};
+
+enum _menu_time {
+  set_hour,
+  set_minute,
+  set_second
+};
+
+enum _menu_date {
+  set_day,
+  set_month,
+  set_year
+};
+
 /* Defined structs */
 typedef struct {
   uint8_t hour;
