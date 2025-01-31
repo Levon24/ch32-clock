@@ -16,25 +16,27 @@ void TIM2_IRQHandler(void) __attribute__((interrupt("WCH-Interrupt-fast")));
 /**
  * Init GPIO Port C
  */
-void GPIO_InitPorts(void) {
-  
-  // Port C
+void GPIO_InitPortC(void) {
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
   
-  GPIO_InitTypeDef GPIO_InitPortC = {0};
-  GPIO_InitPortC.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1;
-  GPIO_InitPortC.GPIO_Mode = GPIO_Mode_Out_PP;
-  GPIO_InitPortC.GPIO_Speed = GPIO_Speed_30MHz;
-  GPIO_Init(GPIOC, &GPIO_InitPortC);
+  GPIO_InitTypeDef GPIO_InitPort = {0};
+  GPIO_InitPort.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1;
+  GPIO_InitPort.GPIO_Mode = GPIO_Mode_Out_PP;
+  GPIO_InitPort.GPIO_Speed = GPIO_Speed_30MHz;
+  GPIO_Init(GPIOC, &GPIO_InitPort);
+}
 
-  // Port D
+/**
+ * Init GPIO Port D
+ */
+void GPIO_InitPortD(void) {
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD, ENABLE);
   
-  GPIO_InitTypeDef GPIO_InitPortD = {0};
-  GPIO_InitPortD.GPIO_Pin = GPIO_Pin_0;
-  GPIO_InitPortD.GPIO_Mode = GPIO_Mode_Out_PP;
-  GPIO_InitPortD.GPIO_Speed = GPIO_Speed_30MHz;
-  GPIO_Init(GPIOD, &GPIO_InitPortD);
+  GPIO_InitTypeDef GPIO_InitPort = {0};
+  GPIO_InitPort.GPIO_Pin = GPIO_Pin_0;
+  GPIO_InitPort.GPIO_Mode = GPIO_Mode_Out_PP;
+  GPIO_InitPort.GPIO_Speed = GPIO_Speed_30MHz;
+  GPIO_Init(GPIOD, &GPIO_InitPort);
 }
 
 /**
@@ -91,7 +93,9 @@ int main(void) {
   printf("ChipID: %08x\r\n", DBGMCU_GetCHIPID());
   printf("GPIO Clock TEST\r\n");
     
-  GPIO_InitPorts();
+  GPIO_InitPortC();
+  GPIO_InitPortD();
+
   TIM_InitTimer2();
 
   //tm1637_set_brightness(5);
