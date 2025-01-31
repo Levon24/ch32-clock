@@ -31,6 +31,9 @@ void clock_increment(_clock_t *clock) {
             clock->month = 0;
 
             clock->year++;
+            if (clock->year > 99) {
+              clock->year = 0;
+            }
           }
         }
       }
