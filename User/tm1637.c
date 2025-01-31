@@ -5,8 +5,6 @@
 #define TM1637_REGISTER_ADDRESS 0xC0
 #define TM1637_DISPLAY_CONTROL 0x80
 
-const uint8_t tm1637_minus = 0x40;
-const uint8_t tm1637_dot = 0x80;
 const uint8_t tm1637_maping[] = {2, 1, 0, 5, 4, 3};
 const uint8_t tm1637_digits[] = {0x3f, 0x06, 0x5b, 0x4f, 0x66, 0x6d, 0x7d, 0x07, 0x7f, 0x6f};
 
@@ -134,13 +132,4 @@ void tm1637_set_brightness(uint8_t level) {
  */
 uint8_t tm1637_toDigit(uint8_t value) {
   return tm1637_digits[value];
-}
-
-/**
- * Get dot
- * 
- * @return uint8_t 
- */
-uint8_t tm1637_getDot() {
-  return tm1637_dot;
 }

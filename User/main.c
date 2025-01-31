@@ -9,6 +9,8 @@
 /* Global Variables */
 _clock_t clock = {14, 12, 59, 30, 1, 25};
 uint8_t segments[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
+uint8_t flash = 3;
+uint8_t light = 0;
 
 /* IRQ Handlers */
 void TIM2_IRQHandler(void) __attribute__((interrupt("WCH-Interrupt-fast")));
@@ -101,21 +103,35 @@ int main(void) {
   //tm1637_set_brightness(5);
   //tm1637_write_segments(segments);
 
-  uint8_t port = 0;
-
   while (1) {
     Delay_Ms(250);
 
-    segments[0] = tm1637_toDigit(clock.hour / 10);
-    segments[1] = tm1637_toDigit(clock.hour % 10) | tm1637_getDot();
+    if ((flash & 0x01) && light) {
+      segments[0] = 0;
+    } else {
+      segments[0] = tm1637_toDigit(clock.hour / 10);
+    }
+    if ((flash & 0x02) && light) {
+      segments[1] = 0;
+    } else {
+      segments[1] = tm1637_toDigit(clock.hour % 10) | TM1637_DOT;
+    }
+
     segments[2] = tm1637_toDigit(clock.minute / 10);
-    segments[3] = tm1637_toDigit(clock.minute % 10) | tm1637_getDot();
+    segments[3] = tm1637_toDigit(clock.minute % 10) | TM1637_DOT;
     segments[4] = tm1637_toDigit(clock.second / 10);
     segments[5] = tm1637_toDigit(clock.second % 10);
     tm1637_write_segments(segments);
 
     printf("Time: %02d/%02d/%02d %02d:%02d:%02d\r\n", clock.day, clock.month, clock.year, clock.hour, clock.minute, clock.second);
 
-    GPIO_WriteBit(GPIOD, GPIO_Pin_0, (port == 0) ? (port = Bit_SET) : (port = Bit_RESET));
+    GPIO_WriteBit(GPIOD, GPIO_Pin_0, (light == 1) ? Bit_SET : Bit_RESET);
+
+    // Update 
+    if (light == 0) {
+      light = 1;
+    } else {
+      light = 0;
+    }
   }
 }
