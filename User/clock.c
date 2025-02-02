@@ -2,6 +2,20 @@
 #include "clock.h"
 
 const uint8_t monthDays[] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+const uint8_t leapFeb = 29;
+
+/**
+ * Get the Month Days
+ * 
+ * @return uint8_t 
+ */
+uint8_t calculateMonthDays(_clock_t *clock) {
+  if ((clock->month == 2 /* February */) && ((clock->year == 0) || ((clock->year % 4) == 0))) {
+    return leapFeb;
+  } else {
+    return monthDays[clock->month];
+  }
+}
 
 /**
  * Increment seconds
@@ -23,7 +37,7 @@ void clock_increment(_clock_t *clock) {
         clock->hour = 0;
 
         clock->day++;
-        if (clock->day > monthDays[clock->month]) {
+        if (clock->day > calculateMonthDays(clock)) {
           clock->day = 0;
 
           clock->month++;
@@ -40,4 +54,3 @@ void clock_increment(_clock_t *clock) {
     }
   }
 }
-
