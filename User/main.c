@@ -21,9 +21,10 @@ void TIM2_IRQHandler(void) __attribute__((interrupt("WCH-Interrupt-fast")));
 void GPIO_InitPortC(void) {
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
   
+  // TM1637
   GPIO_InitTypeDef GPIO_InitPort = {0};
   GPIO_InitPort.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1;
-  GPIO_InitPort.GPIO_Mode = GPIO_Mode_Out_PP;
+  GPIO_InitPort.GPIO_Mode = GPIO_Mode_Out_OD;
   GPIO_InitPort.GPIO_Speed = GPIO_Speed_30MHz;
   GPIO_Init(GPIOC, &GPIO_InitPort);
 }

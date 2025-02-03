@@ -16,7 +16,7 @@ uint8_t tm1637_brightness = 0x08 | 0x07; // On + Brightness
  * When using a fast clock (such as ESP8266) a delay is needed to read bits correctly 
  */
 void tm1637_delay() {
-  Delay_Us(TM1637_BIT_DELAY);
+  Delay_Us(TM1637_BIT_DELAY_US);
 }
 
 /**
