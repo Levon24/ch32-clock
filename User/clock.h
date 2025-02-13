@@ -5,10 +5,12 @@
  extern "C" {
 #endif 
 
-#define POSITION_HOURS    0
-#define POSITION_MINUTES  1
-#define POSITION_SECONDS  2
-
+#define POSITION_HOUR    0
+#define POSITION_MINUTE  1
+#define POSITION_SECOND  2
+#define POSITION_DAY     0
+#define POSITION_MONTH   1
+#define POSITION_YEAR    2
 
 /* Defined enums */
 enum _state {
@@ -32,6 +34,7 @@ typedef struct {
 
 /* Defined functions */
 void clock_increment(_clock_t *clock);
+uint8_t calculateMonthDays(_clock_t *clock);
 
 #ifdef __cplusplus
 }

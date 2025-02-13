@@ -144,7 +144,7 @@ int main(void) {
         segments[5] = tm1637_toDigit(clock.year % 10);
 
         if ((buttons & BUTTON_SETTINGS) == BUTTON_PRESSED) {
-          //state = setup_date;
+          state = setup_date;
         } 
         if ((buttons & BUTTON_NEXT) == BUTTON_PRESSED) {
           state = show_time;
@@ -152,21 +152,21 @@ int main(void) {
         break;
 
       case setup_time:
-        if (position == POSITION_HOURS && flash) {
+        if (position == POSITION_HOUR && flash) {
           segments[0] = 0;
           segments[1] = 0;
         } else {
           segments[0] = tm1637_toDigit(clock.hour / 10);
           segments[1] = tm1637_toDigit(clock.hour % 10) | TM1637_DOT;
         }
-        if (position == POSITION_MINUTES && flash) {
+        if (position == POSITION_MINUTE && flash) {
           segments[2] = 0;
           segments[3] = 0;
         } else {
           segments[2] = tm1637_toDigit(clock.minute / 10);
           segments[3] = tm1637_toDigit(clock.minute % 10) | TM1637_DOT;
         }
-        if (position == POSITION_SECONDS && flash) {
+        if (position == POSITION_SECOND && flash) {
           segments[4] = 0;
           segments[5] = 0;
         } else {
@@ -175,17 +175,17 @@ int main(void) {
         }
         
         if ((buttons & BUTTON_SETTINGS) == BUTTON_PRESSED) {
-          //state = setup_date;
+          state = setup_date;
         } 
         if ((buttons & BUTTON_NEXT) == BUTTON_PRESSED) {
-          if (position == POSITION_SECONDS) {
-            position = POSITION_HOURS;
+          if (position == POSITION_SECOND) {
+            position = POSITION_HOUR;
           } else {
             position++;
           }
         }
         switch (position) {
-          case POSITION_HOURS:
+          case POSITION_HOUR:
             if ((buttons & BUTTON_UP) == BUTTON_PRESSED) {
               if (clock.hour == 23) {
                 clock.hour = 0;
@@ -201,7 +201,7 @@ int main(void) {
               }
             }
             break;
-          case POSITION_MINUTES:
+          case POSITION_MINUTE:
             if ((buttons & BUTTON_UP) == BUTTON_PRESSED) {
               if (clock.minute == 59) {
                 clock.minute = 0;
@@ -217,7 +217,7 @@ int main(void) {
               }
             }
             break;
-          case POSITION_SECONDS:
+          case POSITION_SECOND:
             if ((buttons & BUTTON_UP) == BUTTON_PRESSED) {
               if (clock.second == 59) {
                 clock.second = 0;
@@ -230,6 +230,91 @@ int main(void) {
                 clock.second = 59;
               } else {
                 clock.second--;
+              }
+            }
+            break;
+        }
+        break;
+
+      case setup_date:
+        if (position == POSITION_DAY && flash) {
+          segments[0] = 0;
+          segments[1] = 0;
+        } else {
+          segments[0] = tm1637_toDigit(clock.day / 10);
+          segments[1] = tm1637_toDigit(clock.day % 10) | TM1637_DOT;
+        }
+        if (position == POSITION_MONTH && flash) {
+          segments[2] = 0;
+          segments[3] = 0;
+        } else {
+          segments[2] = tm1637_toDigit(clock.month / 10);
+          segments[3] = tm1637_toDigit(clock.month % 10) | TM1637_DOT;
+        }
+        if (position == POSITION_YEAR && flash) {
+          segments[4] = 0;
+          segments[5] = 0;
+        } else {
+          segments[4] = tm1637_toDigit(clock.year / 10);
+          segments[5] = tm1637_toDigit(clock.year % 10);
+        }
+        
+        if ((buttons & BUTTON_SETTINGS) == BUTTON_PRESSED) {
+          state = setup_time;
+        } 
+        if ((buttons & BUTTON_NEXT) == BUTTON_PRESSED) {
+          if (position == POSITION_YEAR) {
+            position = POSITION_DAY;
+          } else {
+            position++;
+          }
+        }
+        switch (position) {
+          case POSITION_DAY:
+            if ((buttons & BUTTON_UP) == BUTTON_PRESSED) {
+              if (clock.day == calculateMonthDays(&clock)) {
+                clock.day = 0;
+              } else {
+                clock.day++;
+              }
+             }
+             if ((buttons & BUTTON_DOWN) == BUTTON_PRESSED) {
+              if (clock.day == 0) {
+                clock.day = calculateMonthDays(&clock);
+              } else {
+                clock.day--;
+              }
+            }
+            break;
+          case POSITION_MONTH:
+            if ((buttons & BUTTON_UP) == BUTTON_PRESSED) {
+              if (clock.month == 12) {
+                clock.month = 0;
+              } else {
+                clock.month++;
+              }
+             }
+             if ((buttons & BUTTON_DOWN) == BUTTON_PRESSED) {
+              if (clock.month == 0) {
+                clock.month = 12;
+              } else {
+                clock.month--;
+              }
+            }
+            break;
+          case POSITION_YEAR:
+            if ((buttons & BUTTON_UP) == BUTTON_PRESSED) {
+              if (clock.year == 99) {
+                clock.year = 0;
+              } else {
+                clock.year++;
+              }
+             }
+             if ((buttons & BUTTON_DOWN) == BUTTON_PRESSED) {
+              if (clock.year == 0) {
+                clock.year = 99;
+              } else {
+                clock.year--;
               }
             }
             break;
