@@ -3,43 +3,50 @@
 #include "clock.h"
 
 /* Global defines */
-#define _TIM2_ARR (1000 - 1)
-#define _TIM2_PSC ((SystemCoreClock / 1000) - 1)
+#define _TIM2_ARR   (1000 - 1)
+#define _TIM2_PSC   ((SystemCoreClock / 1000) - 1)
+
+#define BUTTON_SETTINGS   GPIO_Pin_3
+#define BUTTON_NEXT       GPIO_Pin_2
+#define BUTTON_UP         GPIO_Pin_7
+#define BUTTON_DOWN       GPIO_Pin_6
 
 /* Global Variables */
 _clock_t clock = {14, 12, 59, 30, 1, 25};
 uint8_t segments[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
-uint8_t flash = 3;
+uint8_t flash = 0;
 uint8_t light = 0;
 
 /* IRQ Handlers */
 void TIM2_IRQHandler(void) __attribute__((interrupt("WCH-Interrupt-fast")));
 
 /**
- * Init GPIO Port C
+ * Init GPIO Ports
  */
-void GPIO_InitPortC(void) {
+void GPIO_InitPorts(void) {
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
-  
-  // TM1637
-  GPIO_InitTypeDef GPIO_InitPort = {0};
-  GPIO_InitPort.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1;
-  GPIO_InitPort.GPIO_Mode = GPIO_Mode_Out_OD;
-  GPIO_InitPort.GPIO_Speed = GPIO_Speed_30MHz;
-  GPIO_Init(GPIOC, &GPIO_InitPort);
-}
-
-/**
- * Init GPIO Port D
- */
-void GPIO_InitPortD(void) {
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD, ENABLE);
   
-  GPIO_InitTypeDef GPIO_InitPort = {0};
-  GPIO_InitPort.GPIO_Pin = GPIO_Pin_0;
-  GPIO_InitPort.GPIO_Mode = GPIO_Mode_Out_PP;
-  GPIO_InitPort.GPIO_Speed = GPIO_Speed_30MHz;
-  GPIO_Init(GPIOD, &GPIO_InitPort);
+  // TM1637
+  GPIO_InitTypeDef GPIO_InitPortC01 = {0};
+  GPIO_InitPortC01.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1;
+  GPIO_InitPortC01.GPIO_Mode = GPIO_Mode_Out_OD;
+  GPIO_InitPortC01.GPIO_Speed = GPIO_Speed_30MHz;
+  GPIO_Init(GPIOC, &GPIO_InitPortC01);
+
+  // Buttons
+  GPIO_InitTypeDef GPIO_InitPortC23 = {0};
+  GPIO_InitPortC23.GPIO_Pin = GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_6 | GPIO_Pin_7;
+  GPIO_InitPortC23.GPIO_Mode = GPIO_Mode_IPU;
+  GPIO_InitPortC23.GPIO_Speed = GPIO_Speed_30MHz;
+  GPIO_Init(GPIOC, &GPIO_InitPortC23);
+
+  // LED
+  GPIO_InitTypeDef GPIO_InitPortD0 = {0};
+  GPIO_InitPortD0.GPIO_Pin = GPIO_Pin_0;
+  GPIO_InitPortD0.GPIO_Mode = GPIO_Mode_Out_PP;
+  GPIO_InitPortD0.GPIO_Speed = GPIO_Speed_30MHz;
+  GPIO_Init(GPIOD, &GPIO_InitPortD0);
 }
 
 /**
@@ -96,9 +103,7 @@ int main(void) {
   printf("ChipID: %08x\r\n", DBGMCU_GetCHIPID());
   printf("GPIO Clock TEST\r\n");
     
-  GPIO_InitPortC();
-  GPIO_InitPortD();
-
+  GPIO_InitPorts();
   TIM_InitTimer2();
 
   //tm1637_set_brightness(5);
@@ -124,9 +129,8 @@ int main(void) {
     segments[5] = tm1637_toDigit(clock.second % 10);
     tm1637_write_segments(segments);
 
-    printf("Time: %02d/%02d/%02d %02d:%02d:%02d\r\n", clock.day, clock.month, clock.year, clock.hour, clock.minute, clock.second);
-
-    GPIO_WriteBit(GPIOD, GPIO_Pin_0, (light == 1) ? Bit_SET : Bit_RESET);
+    uint16_t buttons = GPIO_ReadInputData(GPIOC);
+    GPIO_WriteBit(GPIOD, GPIO_Pin_0, (buttons & BUTTON_UP) ? Bit_SET : Bit_RESET);
 
     // Update 
     if (light == 0) {

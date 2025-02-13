@@ -21,7 +21,6 @@
 			"*.cc": "cpp",
 			"*.hh": "cpp",
 			"*.h++": "cpp"
-		},
-		"editor.fontSize": 13
+		}
 	}
 }
