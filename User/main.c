@@ -10,12 +10,14 @@
 #define BUTTON_NEXT       GPIO_Pin_2
 #define BUTTON_UP         GPIO_Pin_7
 #define BUTTON_DOWN       GPIO_Pin_6
+#define BUTTON_PRESSED    0
 
 /* Global Variables */
 _clock_t clock = {14, 12, 59, 30, 1, 25};
 uint8_t segments[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 uint8_t flash = 0;
 uint8_t light = 0;
+uint8_t state = STATE_TIME;
 
 /* IRQ Handlers */
 void TIM2_IRQHandler(void) __attribute__((interrupt("WCH-Interrupt-fast")));
@@ -84,6 +86,7 @@ void TIM2_IRQHandler(void) {
     TIM_ClearITPendingBit(TIM2, TIM_IT_Update); 
   }
 }
+
 /**
  * Main function
  * 
@@ -110,26 +113,40 @@ int main(void) {
   //tm1637_write_segments(segments);
 
   while (1) {
-    Delay_Ms(250);
-
-    if ((flash & 0x01) && light) {
-      segments[0] = 0;
-    } else {
-      segments[0] = tm1637_toDigit(clock.hour / 10);
-    }
-    if ((flash & 0x02) && light) {
-      segments[1] = 0;
-    } else {
-      segments[1] = tm1637_toDigit(clock.hour % 10) | TM1637_DOT;
-    }
-
-    segments[2] = tm1637_toDigit(clock.minute / 10);
-    segments[3] = tm1637_toDigit(clock.minute % 10) | TM1637_DOT;
-    segments[4] = tm1637_toDigit(clock.second / 10);
-    segments[5] = tm1637_toDigit(clock.second % 10);
-    tm1637_write_segments(segments);
+    Delay_Ms(200);
 
     uint16_t buttons = GPIO_ReadInputData(GPIOC);
+
+    switch (state) {
+      case STATE_TIME:
+        segments[0] = tm1637_toDigit(clock.hour / 10);
+        segments[1] = tm1637_toDigit(clock.hour % 10) | TM1637_DOT;
+        segments[2] = tm1637_toDigit(clock.minute / 10);
+        segments[3] = tm1637_toDigit(clock.minute % 10) | TM1637_DOT;
+        segments[4] = tm1637_toDigit(clock.second / 10);
+        segments[5] = tm1637_toDigit(clock.second % 10);
+        
+        if ((buttons & BUTTON_NEXT) == BUTTON_PRESSED) {
+          state = STATE_DATE;
+        } 
+        break;
+    
+      case STATE_DATE:
+        segments[0] = tm1637_toDigit(clock.day / 10);
+        segments[1] = tm1637_toDigit(clock.day % 10) | TM1637_DOT;
+        segments[2] = tm1637_toDigit(clock.month / 10);
+        segments[3] = tm1637_toDigit(clock.month % 10) | TM1637_DOT;
+        segments[4] = tm1637_toDigit(clock.year / 10);
+        segments[5] = tm1637_toDigit(clock.year % 10);
+
+        if ((buttons & BUTTON_NEXT) == BUTTON_PRESSED) {
+          state = STATE_TIME;
+        }
+        break;
+    }
+    tm1637_write_segments(segments);
+    
+    // LED
     GPIO_WriteBit(GPIOD, GPIO_Pin_0, (buttons & BUTTON_UP) ? Bit_SET : Bit_RESET);
 
     // Update 

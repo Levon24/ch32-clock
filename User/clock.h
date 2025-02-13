@@ -5,6 +5,9 @@
  extern "C" {
 #endif 
 
+#define STATE_TIME  0x01
+#define STATE_DATE  0x02
+
 /* Defined enums */
 enum _menu {
   time, // 
