@@ -261,7 +261,7 @@ int main(void) {
         }
         
         if ((buttons & BUTTON_SETTINGS) == BUTTON_PRESSED) {
-          state = show_time;
+          state = setup_brightness;
           position = POSITION_DEFAULT;
         } 
         if ((buttons & BUTTON_NEXT) == BUTTON_PRESSED) {
@@ -322,8 +322,39 @@ int main(void) {
             break;
         }
         break;
+
+      case setup_brightness: {
+          uint8_t b = tm1637_getBrightness();
+
+          segments[0] = 0b01111111; // B
+          segments[1] = 0b01110111; // R
+          segments[2] = 0;
+          segments[3] = 0;
+          segments[4] = 0;
+          if (position == POSITION_DEFAULT && flash) {
+            segments[5] = 0;
+          } else {
+            segments[5] = tm1637_toDigit(b);
+          }
+          
+          if ((buttons & BUTTON_SETTINGS) == BUTTON_PRESSED) {
+            state = show_time;
+            position = POSITION_DEFAULT;
+          } 
+          if ((buttons & BUTTON_UP) == BUTTON_PRESSED) {
+            if (b < 7) {
+              tm1637_setBrightness(++b);
+            }
+          }
+          if ((buttons & BUTTON_DOWN) == BUTTON_PRESSED) {
+            if (b > 1) {
+              tm1637_setBrightness(--b);
+            }
+          }
+        }
+        break;
     }
-    tm1637_write_segments(segments);
+    tm1637_writeSegments(segments);
     
     // LED
     GPIO_WriteBit(GPIOD, GPIO_Pin_0, (flash == 1) ? Bit_SET : Bit_RESET);

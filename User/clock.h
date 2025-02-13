@@ -19,6 +19,7 @@ enum _state {
   show_date,
   setup_time,
   setup_date,
+  setup_brightness,
   setup_alarm_no,
   setup_alarm_time
 };

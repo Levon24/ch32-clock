@@ -1,6 +1,21 @@
 #include <debug.h>
 #include "tm1637.h"
 
+/**
+ * Display description 
+ *
+         A
+        ---
+     F |   | B   *
+        -G-      H (on 2nd segment)
+     E |   | C   *
+        ---
+         D
+
+      HGFEDCBA
+    0b01101101 = 0x6D = 109 = show "5"
+ */
+
 #define TM1637_WRITE_DATA_TO_DISPLAY 0x40
 #define TM1637_REGISTER_ADDRESS 0xC0
 #define TM1637_DISPLAY_CONTROL 0x80
@@ -47,7 +62,7 @@ void tm1637_stop() {
  * @param data 
  * @return acknowledge 
  */
-u8 tm1637_write_byte(uint8_t data) {
+u8 tm1637_writeByte(uint8_t data) {
   // Write 8 bit data
   for (uint8_t i = 0; i < 8; i++) {
     GPIO_WriteBit(LED7SEG_PORT, LED7SEG_CLK, Bit_RESET);
@@ -91,26 +106,26 @@ u8 tm1637_write_byte(uint8_t data) {
  * 
  * @param segments 
  */
-void tm1637_write_segments(const uint8_t *segments) {
+void tm1637_writeSegments(const uint8_t *segments) {
   // Write command #1: Write data to display register
   tm1637_start();
-  tm1637_write_byte(TM1637_WRITE_DATA_TO_DISPLAY);
+  tm1637_writeByte(TM1637_WRITE_DATA_TO_DISPLAY);
   tm1637_stop();
   
   // Write command #2: The command is used to set the display register address.
   tm1637_start();
-  tm1637_write_byte(TM1637_REGISTER_ADDRESS);
+  tm1637_writeByte(TM1637_REGISTER_ADDRESS);
   
   // write the data bytes
   for (uint8_t pos = 0; pos < TM1637_DISPLAY_LENGTH; pos++) {
     uint8_t seg = tm1637_maping[pos];
-    tm1637_write_byte(segments[seg]);
+    tm1637_writeByte(segments[seg]);
   }
   tm1637_stop();
   
   // Write command #3: Display control
   tm1637_start();
-  tm1637_write_byte(TM1637_DISPLAY_CONTROL | tm1637_brightness);
+  tm1637_writeByte(TM1637_DISPLAY_CONTROL | tm1637_brightness);
   tm1637_stop();
 }
 
@@ -119,9 +134,17 @@ void tm1637_write_segments(const uint8_t *segments) {
  * 
  * @param level 
  */
-void tm1637_set_brightness(uint8_t level) {
-
+void tm1637_setBrightness(uint8_t level) {
   tm1637_brightness = 0x08 | (level & 0x07);
+}
+
+/**
+ * Get brightness level
+ * 
+ * @param level 
+ */
+uint8_t tm1637_getBrightness() {
+  return tm1637_brightness;
 }
 
 /**

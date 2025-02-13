@@ -16,8 +16,9 @@
 #define TM1637_DOT 0x80;
 
 /* Exported Functions */
-void tm1637_write_segments(const uint8_t *segments);
-void tm1637_set_brightness(uint8_t level);
+void tm1637_writeSegments(const uint8_t *segments);
+void tm1637_setBrightness(uint8_t level);
+uint8_t tm1637_getBrightness();
 uint8_t tm1637_toDigit(uint8_t value);
 
 #ifdef __cplusplus
