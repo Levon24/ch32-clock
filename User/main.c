@@ -187,7 +187,7 @@ int main(void) {
         switch (position) {
           case POSITION_HOURS:
             if ((buttons & BUTTON_UP) == BUTTON_PRESSED) {
-              if (clock.hour == 24) {
+              if (clock.hour == 23) {
                 clock.hour = 0;
               } else {
                 clock.hour++;
@@ -195,9 +195,41 @@ int main(void) {
              }
              if ((buttons & BUTTON_DOWN) == BUTTON_PRESSED) {
               if (clock.hour == 0) {
-                clock.hour = 24;
+                clock.hour = 23;
               } else {
                 clock.hour--;
+              }
+            }
+            break;
+          case POSITION_MINUTES:
+            if ((buttons & BUTTON_UP) == BUTTON_PRESSED) {
+              if (clock.minute == 59) {
+                clock.minute = 0;
+              } else {
+                clock.minute++;
+              }
+             }
+             if ((buttons & BUTTON_DOWN) == BUTTON_PRESSED) {
+              if (clock.minute == 0) {
+                clock.minute = 59;
+              } else {
+                clock.minute--;
+              }
+            }
+            break;
+          case POSITION_SECONDS:
+            if ((buttons & BUTTON_UP) == BUTTON_PRESSED) {
+              if (clock.second == 59) {
+                clock.second = 0;
+              } else {
+                clock.second++;
+              }
+             }
+             if ((buttons & BUTTON_DOWN) == BUTTON_PRESSED) {
+              if (clock.second == 0) {
+                clock.second = 59;
+              } else {
+                clock.second--;
               }
             }
             break;
@@ -207,7 +239,7 @@ int main(void) {
     tm1637_write_segments(segments);
     
     // LED
-    GPIO_WriteBit(GPIOD, GPIO_Pin_0, (buttons & BUTTON_UP) ? Bit_SET : Bit_RESET);
+    GPIO_WriteBit(GPIOD, GPIO_Pin_0, (flash == 1) ? Bit_SET : Bit_RESET);
 
     // Update 
     if (flash == 0) {
