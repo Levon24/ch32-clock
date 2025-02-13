@@ -5,6 +5,7 @@
  extern "C" {
 #endif 
 
+#define POSITION_DEFAULT 0
 #define POSITION_HOUR    0
 #define POSITION_MINUTE  1
 #define POSITION_SECOND  2

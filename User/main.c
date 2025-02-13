@@ -176,6 +176,7 @@ int main(void) {
         
         if ((buttons & BUTTON_SETTINGS) == BUTTON_PRESSED) {
           state = setup_date;
+          position = POSITION_DEFAULT;
         } 
         if ((buttons & BUTTON_NEXT) == BUTTON_PRESSED) {
           if (position == POSITION_SECOND) {
@@ -260,7 +261,8 @@ int main(void) {
         }
         
         if ((buttons & BUTTON_SETTINGS) == BUTTON_PRESSED) {
-          state = setup_time;
+          state = show_time;
+          position = POSITION_DEFAULT;
         } 
         if ((buttons & BUTTON_NEXT) == BUTTON_PRESSED) {
           if (position == POSITION_YEAR) {
@@ -273,13 +275,13 @@ int main(void) {
           case POSITION_DAY:
             if ((buttons & BUTTON_UP) == BUTTON_PRESSED) {
               if (clock.day == calculateMonthDays(&clock)) {
-                clock.day = 0;
+                clock.day = 1;
               } else {
                 clock.day++;
               }
              }
              if ((buttons & BUTTON_DOWN) == BUTTON_PRESSED) {
-              if (clock.day == 0) {
+              if (clock.day == 1) {
                 clock.day = calculateMonthDays(&clock);
               } else {
                 clock.day--;
@@ -289,13 +291,13 @@ int main(void) {
           case POSITION_MONTH:
             if ((buttons & BUTTON_UP) == BUTTON_PRESSED) {
               if (clock.month == 12) {
-                clock.month = 0;
+                clock.month = 1;
               } else {
                 clock.month++;
               }
              }
              if ((buttons & BUTTON_DOWN) == BUTTON_PRESSED) {
-              if (clock.month == 0) {
+              if (clock.month == 1) {
                 clock.month = 12;
               } else {
                 clock.month--;
