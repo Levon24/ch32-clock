@@ -5,26 +5,19 @@
  extern "C" {
 #endif 
 
-#define STATE_TIME  0x01
-#define STATE_DATE  0x02
+#define POSITION_HOURS    0
+#define POSITION_MINUTES  1
+#define POSITION_SECONDS  2
+
 
 /* Defined enums */
-enum _menu {
-  time, // 
-  date,
-  alarm
-};
-
-enum _menu_time {
-  set_hour,
-  set_minute,
-  set_second
-};
-
-enum _menu_date {
-  set_day,
-  set_month,
-  set_year
+enum _state {
+  show_time, 
+  show_date,
+  setup_time,
+  setup_date,
+  setup_alarm_no,
+  setup_alarm_time
 };
 
 /* Defined structs */

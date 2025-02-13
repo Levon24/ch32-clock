@@ -16,8 +16,9 @@
 _clock_t clock = {14, 12, 59, 30, 1, 25};
 uint8_t segments[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 uint8_t flash = 0;
-uint8_t light = 0;
-uint8_t state = STATE_TIME;
+
+enum _state state = show_time;
+uint8_t position = 0;
 
 /* IRQ Handlers */
 void TIM2_IRQHandler(void) __attribute__((interrupt("WCH-Interrupt-fast")));
@@ -113,12 +114,12 @@ int main(void) {
   //tm1637_write_segments(segments);
 
   while (1) {
-    Delay_Ms(200);
+    Delay_Ms(100);
 
     uint16_t buttons = GPIO_ReadInputData(GPIOC);
 
     switch (state) {
-      case STATE_TIME:
+      case show_time:
         segments[0] = tm1637_toDigit(clock.hour / 10);
         segments[1] = tm1637_toDigit(clock.hour % 10) | TM1637_DOT;
         segments[2] = tm1637_toDigit(clock.minute / 10);
@@ -126,12 +127,15 @@ int main(void) {
         segments[4] = tm1637_toDigit(clock.second / 10);
         segments[5] = tm1637_toDigit(clock.second % 10);
         
+        if ((buttons & BUTTON_SETTINGS) == BUTTON_PRESSED) {
+          state = setup_time;
+        } 
         if ((buttons & BUTTON_NEXT) == BUTTON_PRESSED) {
-          state = STATE_DATE;
+          state = show_date;
         } 
         break;
     
-      case STATE_DATE:
+      case show_date:
         segments[0] = tm1637_toDigit(clock.day / 10);
         segments[1] = tm1637_toDigit(clock.day % 10) | TM1637_DOT;
         segments[2] = tm1637_toDigit(clock.month / 10);
@@ -139,8 +143,64 @@ int main(void) {
         segments[4] = tm1637_toDigit(clock.year / 10);
         segments[5] = tm1637_toDigit(clock.year % 10);
 
+        if ((buttons & BUTTON_SETTINGS) == BUTTON_PRESSED) {
+          //state = setup_date;
+        } 
         if ((buttons & BUTTON_NEXT) == BUTTON_PRESSED) {
-          state = STATE_TIME;
+          state = show_time;
+        }
+        break;
+
+      case setup_time:
+        if (position == POSITION_HOURS && flash) {
+          segments[0] = 0;
+          segments[1] = 0;
+        } else {
+          segments[0] = tm1637_toDigit(clock.hour / 10);
+          segments[1] = tm1637_toDigit(clock.hour % 10) | TM1637_DOT;
+        }
+        if (position == POSITION_MINUTES && flash) {
+          segments[2] = 0;
+          segments[3] = 0;
+        } else {
+          segments[2] = tm1637_toDigit(clock.minute / 10);
+          segments[3] = tm1637_toDigit(clock.minute % 10) | TM1637_DOT;
+        }
+        if (position == POSITION_SECONDS && flash) {
+          segments[4] = 0;
+          segments[5] = 0;
+        } else {
+          segments[4] = tm1637_toDigit(clock.second / 10);
+          segments[5] = tm1637_toDigit(clock.second % 10);
+        }
+        
+        if ((buttons & BUTTON_SETTINGS) == BUTTON_PRESSED) {
+          //state = setup_date;
+        } 
+        if ((buttons & BUTTON_NEXT) == BUTTON_PRESSED) {
+          if (position == POSITION_SECONDS) {
+            position = POSITION_HOURS;
+          } else {
+            position++;
+          }
+        }
+        switch (position) {
+          case POSITION_HOURS:
+            if ((buttons & BUTTON_UP) == BUTTON_PRESSED) {
+              if (clock.hour == 24) {
+                clock.hour = 0;
+              } else {
+                clock.hour++;
+              }
+             }
+             if ((buttons & BUTTON_DOWN) == BUTTON_PRESSED) {
+              if (clock.hour == 0) {
+                clock.hour = 24;
+              } else {
+                clock.hour--;
+              }
+            }
+            break;
         }
         break;
     }
@@ -150,10 +210,10 @@ int main(void) {
     GPIO_WriteBit(GPIOD, GPIO_Pin_0, (buttons & BUTTON_UP) ? Bit_SET : Bit_RESET);
 
     // Update 
-    if (light == 0) {
-      light = 1;
+    if (flash == 0) {
+      flash = 1;
     } else {
-      light = 0;
+      flash = 0;
     }
   }
 }
