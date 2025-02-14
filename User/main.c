@@ -3,7 +3,7 @@
 #include "clock.h"
 
 /* Global defines */
-#define _TIM2_ARR   (1000 - 1)
+#define _TIM2_ARR   ((1000 - 1) - 3 /* Correction */)
 #define _TIM2_PSC   ((SystemCoreClock / 1000) - 1)
 
 #define BUTTON_SETTINGS   GPIO_Pin_3
@@ -347,7 +347,7 @@ int main(void) {
             }
           }
           if ((buttons & BUTTON_DOWN) == BUTTON_PRESSED) {
-            if (b > 1) {
+            if (b > 0) {
               tm1637_setBrightness(--b);
             }
           }

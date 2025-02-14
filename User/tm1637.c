@@ -16,14 +16,16 @@
     0b01101101 = 0x6D = 109 = show "5"
  */
 
-#define TM1637_WRITE_DATA_TO_DISPLAY 0x40
-#define TM1637_REGISTER_ADDRESS 0xC0
-#define TM1637_DISPLAY_CONTROL 0x80
+#define TM1637_WRITE_DATA_TO_DISPLAY  0x40
+#define TM1637_REGISTER_ADDRESS       0xC0
+#define TM1637_DISPLAY_CONTROL        0x80
+#define TM1637_DISPLAY_ON             0x08
+#define TM1637_BRIGHTNESS_MASK        0x07
 
 const uint8_t tm1637_maping[] = {2, 1, 0, 5, 4, 3};
 const uint8_t tm1637_digits[] = {0x3f, 0x06, 0x5b, 0x4f, 0x66, 0x6d, 0x7d, 0x07, 0x7f, 0x6f};
 
-uint8_t tm1637_brightness = 0x08 | 0x07; // On + Brightness
+uint8_t tm1637_brightness = 0x07; // Brightness
 
 /**
  * NOTE: on TM1637 reading keys should be slower than 250Khz (see datasheet p3)
@@ -125,7 +127,7 @@ void tm1637_writeSegments(const uint8_t *segments) {
   
   // Write command #3: Display control
   tm1637_start();
-  tm1637_writeByte(TM1637_DISPLAY_CONTROL | tm1637_brightness);
+  tm1637_writeByte(TM1637_DISPLAY_CONTROL | TM1637_DISPLAY_ON | tm1637_brightness);
   tm1637_stop();
 }
 
@@ -135,7 +137,7 @@ void tm1637_writeSegments(const uint8_t *segments) {
  * @param level 
  */
 void tm1637_setBrightness(uint8_t level) {
-  tm1637_brightness = 0x08 | (level & 0x07);
+  tm1637_brightness = TM1637_BRIGHTNESS_MASK & level;
 }
 
 /**

@@ -12,8 +12,8 @@
 #define TM1637_DISPLAY_LENGTH 6
 #define TM1637_BIT_DELAY_US 400
 
-#define TM1637_MINUS 0x40;
-#define TM1637_DOT 0x80;
+#define TM1637_MINUS  0x40;
+#define TM1637_DOT    0x80;
 
 /* Exported Functions */
 void tm1637_writeSegments(const uint8_t *segments);
