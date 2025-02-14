@@ -3,6 +3,8 @@
 #include "clock.h"
 
 /* Global defines */
+#define _TIM1_ARR   ((100 - 1) - 1)
+#define _TIM1_PSC   ((SystemCoreClock / 1000) - 1)
 #define _TIM2_ARR   ((1000 - 1) - 3 /* Correction */)
 #define _TIM2_PSC   ((SystemCoreClock / 1000) - 1)
 
@@ -20,15 +22,18 @@ uint8_t flash = 0;
 enum _state state = show_time;
 uint8_t position = 0;
 
+uint8_t tim1 = 0;
+
 /* IRQ Handlers */
+void TIM1_UP_IRQHandler(void) __attribute__((interrupt("WCH-Interrupt-fast")));
 void TIM2_IRQHandler(void) __attribute__((interrupt("WCH-Interrupt-fast")));
 
 /**
  * Init GPIO Ports
  */
 void GPIO_InitPorts(void) {
+  // Port C
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD, ENABLE);
   
   // TM1637
   GPIO_InitTypeDef GPIO_InitPortC01 = {0};
@@ -44,6 +49,9 @@ void GPIO_InitPorts(void) {
   GPIO_InitPortC23.GPIO_Speed = GPIO_Speed_30MHz;
   GPIO_Init(GPIOC, &GPIO_InitPortC23);
 
+  // Port D
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD, ENABLE);
+
   // LED
   GPIO_InitTypeDef GPIO_InitPortD0 = {0};
   GPIO_InitPortD0.GPIO_Pin = GPIO_Pin_0;
@@ -53,28 +61,67 @@ void GPIO_InitPorts(void) {
 }
 
 /**
- * Init Timer #2
+ * Init Timers
  */
-void TIM_InitTimer2() {
+void TIM_InitTimers() {
+  // Timer 1
+  RCC_APB1PeriphClockCmd(RCC_APB2Periph_TIM1, ENABLE);
+
+  TIM_TimeBaseInitTypeDef TIMBase_InitStruct1 = {0};
+  TIMBase_InitStruct1.TIM_Period = _TIM1_ARR;
+  TIMBase_InitStruct1.TIM_Prescaler = _TIM1_PSC;
+  TIMBase_InitStruct1.TIM_CounterMode = TIM_CounterMode_Up;
+  TIMBase_InitStruct1.TIM_ClockDivision = TIM_CKD_DIV1;
+  TIM_TimeBaseInit(TIM1, &TIMBase_InitStruct1);
+
+  TIM_ITConfig(TIM1, TIM_IT_Update, ENABLE);
+
+  NVIC_InitTypeDef NVIC_InitStruct1 = {0};
+  NVIC_InitStruct1.NVIC_IRQChannel = TIM1_UP_IRQn;
+  NVIC_InitStruct1.NVIC_IRQChannelPreemptionPriority = 0;
+  NVIC_InitStruct1.NVIC_IRQChannelSubPriority = 0;
+  NVIC_InitStruct1.NVIC_IRQChannelCmd = ENABLE;
+  NVIC_Init(&NVIC_InitStruct1);
+
+  TIM_Cmd(TIM1, ENABLE);
+
+  // Timer 2
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
     
-  TIM_TimeBaseInitTypeDef TIMBase_InitStruct = {0};
-  TIMBase_InitStruct.TIM_Period = _TIM2_ARR;
-  TIMBase_InitStruct.TIM_CounterMode = TIM_CounterMode_Up;
-  TIMBase_InitStruct.TIM_Prescaler = _TIM2_PSC;
-  TIMBase_InitStruct.TIM_ClockDivision = TIM_CKD_DIV1;
-  TIM_TimeBaseInit(TIM2, &TIMBase_InitStruct);
+  TIM_TimeBaseInitTypeDef TIMBase_InitStruct2 = {0};
+  TIMBase_InitStruct2.TIM_Period = _TIM2_ARR;
+  TIMBase_InitStruct2.TIM_Prescaler = _TIM2_PSC;
+  TIMBase_InitStruct2.TIM_CounterMode = TIM_CounterMode_Up;
+  TIMBase_InitStruct2.TIM_ClockDivision = TIM_CKD_DIV1;
+  TIM_TimeBaseInit(TIM2, &TIMBase_InitStruct2);
 
   TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
 
-  NVIC_InitTypeDef NVIC_InitStruct = {0};
-  NVIC_InitStruct.NVIC_IRQChannel = TIM2_IRQn;
-  NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = 0;
-  NVIC_InitStruct.NVIC_IRQChannelSubPriority = 1;
-  NVIC_InitStruct.NVIC_IRQChannelCmd = ENABLE;
-  NVIC_Init(&NVIC_InitStruct);
+  NVIC_InitTypeDef NVIC_InitStruct2 = {0};
+  NVIC_InitStruct2.NVIC_IRQChannel = TIM2_IRQn;
+  NVIC_InitStruct2.NVIC_IRQChannelPreemptionPriority = 1;
+  NVIC_InitStruct2.NVIC_IRQChannelSubPriority = 0;
+  NVIC_InitStruct2.NVIC_IRQChannelCmd = ENABLE;
+  NVIC_Init(&NVIC_InitStruct2);
   
   TIM_Cmd(TIM2, ENABLE);
+}
+
+/**
+ * IRQ Timer 1 Update
+ */
+void TIM1_UP_IRQHandler(void) {
+  if (TIM_GetITStatus(TIM1, TIM_IT_Update) == SET) {
+    if (tim1 == 0) {
+      GPIO_WriteBit(GPIOD, GPIO_Pin_0, Bit_SET);
+      tim1 = 1;
+    } else {
+      GPIO_WriteBit(GPIOD, GPIO_Pin_0, Bit_RESET);
+      tim1 = 0;
+    }
+
+    TIM_ClearITPendingBit(TIM1, TIM_IT_Update);
+  }
 }
 
 /**
@@ -108,7 +155,7 @@ int main(void) {
   printf("GPIO Clock TEST\r\n");
     
   GPIO_InitPorts();
-  TIM_InitTimer2();
+  TIM_InitTimers();
 
   //tm1637_set_brightness(5);
   //tm1637_write_segments(segments);
@@ -357,7 +404,7 @@ int main(void) {
     tm1637_writeSegments(segments);
     
     // LED
-    GPIO_WriteBit(GPIOD, GPIO_Pin_0, (flash == 1) ? Bit_SET : Bit_RESET);
+    //GPIO_WriteBit(GPIOD, GPIO_Pin_0, (flash == 1) ? Bit_SET : Bit_RESET);
 
     // Update 
     if (flash == 0) {
