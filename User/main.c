@@ -24,10 +24,6 @@ uint8_t position = 0;
 
 uint8_t tim1 = 0;
 
-/* IRQ Handlers */
-void TIM1_UP_IRQHandler(void) __attribute__((interrupt("WCH-Interrupt-fast")));
-void TIM2_IRQHandler(void) __attribute__((interrupt("WCH-Interrupt-fast")));
-
 /**
  * Init GPIO Ports
  */
@@ -110,6 +106,7 @@ void TIM_InitTimers() {
 /**
  * IRQ Timer 1 Update
  */
+void TIM1_UP_IRQHandler(void) __attribute__((interrupt("WCH-Interrupt-fast")));
 void TIM1_UP_IRQHandler(void) {
   if (TIM_GetITStatus(TIM1, TIM_IT_Update) == SET) {
     if (tim1 == 0) {
@@ -127,6 +124,7 @@ void TIM1_UP_IRQHandler(void) {
 /**
  * IRQ Timer 2
  */
+void TIM2_IRQHandler(void) __attribute__((interrupt("WCH-Interrupt-fast")));
 void TIM2_IRQHandler(void) {
   if (TIM_GetITStatus(TIM2, TIM_IT_Update) != RESET) {
     clock_increment(&clock);
