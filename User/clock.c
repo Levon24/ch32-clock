@@ -20,10 +20,10 @@ uint8_t calculateMonthDays(_clock_t *clock) {
 /**
  * Increment seconds
  * 
- * @param datetime 
+ * @param clock 
  * @return uint8_t day
  */
-void clock_increment(_clock_t *clock) {
+void clock_tick(_clock_t *clock) {
   clock->second++;
   if (clock->second > 59) {
     clock->second = 0;

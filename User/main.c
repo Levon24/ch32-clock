@@ -5,7 +5,7 @@
 /* Global defines */
 #define _TIM1_ARR   ((100 - 1) - 1)
 #define _TIM1_PSC   ((SystemCoreClock / 1000) - 1)
-#define _TIM2_ARR   ((1000 - 1) - 3 /* Correction */)
+#define _TIM2_ARR   ((1000 - 1) + 3 /* Correction */)
 #define _TIM2_PSC   ((SystemCoreClock / 1000) - 1)
 
 #define BUTTON_SETTINGS   GPIO_Pin_3
@@ -127,7 +127,7 @@ void TIM1_UP_IRQHandler(void) {
 void TIM2_IRQHandler(void) __attribute__((interrupt("WCH-Interrupt-fast")));
 void TIM2_IRQHandler(void) {
   if (TIM_GetITStatus(TIM2, TIM_IT_Update) != RESET) {
-    clock_increment(&clock);
+    clock_tick(&clock);
     
     TIM_ClearITPendingBit(TIM2, TIM_IT_Update); 
   }

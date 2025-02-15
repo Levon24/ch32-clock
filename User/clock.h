@@ -35,7 +35,7 @@ typedef struct {
 } _clock_t;
 
 /* Defined functions */
-void clock_increment(_clock_t *clock);
+void clock_tick(_clock_t *clock);
 uint8_t calculateMonthDays(_clock_t *clock);
 
 #ifdef __cplusplus
