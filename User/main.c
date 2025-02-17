@@ -3,7 +3,7 @@
 #include "clock.h"
 
 /* Global defines */
-#define _TIM1_ARR   ((1000 - 1) - 1)
+#define _TIM1_ARR   (3 - 1)
 #define _TIM1_PSC   ((SystemCoreClock / 1000) - 1)
 #define _TIM2_ARR   ((1000 - 1) + 3 /* Correction */)
 #define _TIM2_PSC   ((SystemCoreClock / 1000) - 1)
@@ -22,7 +22,9 @@ uint8_t flash = 0;
 enum _state state = show_time;
 uint8_t position = 0;
 
-uint8_t tim1 = 0;
+uint8_t speaker = 0;
+uint32_t ticks = 0;
+uint32_t max = 1000; 
 
 /**
  * Init GPIO Ports
@@ -48,12 +50,12 @@ void GPIO_InitPorts(void) {
   // Port D
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD, ENABLE);
 
-  // LED
-  GPIO_InitTypeDef GPIO_InitPortD0 = {0};
-  GPIO_InitPortD0.GPIO_Pin = GPIO_Pin_0;
-  GPIO_InitPortD0.GPIO_Mode = GPIO_Mode_Out_PP;
-  GPIO_InitPortD0.GPIO_Speed = GPIO_Speed_30MHz;
-  GPIO_Init(GPIOD, &GPIO_InitPortD0);
+  // LED & Speaker
+  GPIO_InitTypeDef GPIO_InitPortD02 = {0};
+  GPIO_InitPortD02.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_2;
+  GPIO_InitPortD02.GPIO_Mode = GPIO_Mode_Out_PP;
+  GPIO_InitPortD02.GPIO_Speed = GPIO_Speed_30MHz;
+  GPIO_Init(GPIOD, &GPIO_InitPortD02);
 }
 
 /**
@@ -110,12 +112,18 @@ void TIM_InitTimers() {
 void TIM1_UP_IRQHandler(void) __attribute__((interrupt("WCH-Interrupt-fast")));
 void TIM1_UP_IRQHandler(void) {
   if (TIM_GetITStatus(TIM1, TIM_IT_Update) != RESET) {
-    if (tim1 > 0) {
-      tim1 = 0;
+    if (ticks < max) {
+      if (speaker > 0) {
+        speaker = 0;
+      } else {
+        speaker = 1;
+      }
+      GPIO_WriteBit(GPIOD, GPIO_Pin_2, (speaker == 1) ? Bit_SET : Bit_RESET);
+
+      ticks++;
     } else {
-      tim1 = 1;
+      speaker = 0;
     }
-    GPIO_WriteBit(GPIOD, GPIO_Pin_0, (tim1 == 1) ? Bit_SET : Bit_RESET);
 
     TIM_ClearITPendingBit(TIM1, TIM_IT_Update);
   }
@@ -402,7 +410,7 @@ int main(void) {
     tm1637_writeSegments(segments);
     
     // LED
-    //GPIO_WriteBit(GPIOD, GPIO_Pin_0, (tim1 == 1) ? Bit_SET : Bit_RESET);
+    GPIO_WriteBit(GPIOD, GPIO_Pin_0, (flash == 1) ? Bit_SET : Bit_RESET);
 
     // Update 
     if (flash == 0) {
