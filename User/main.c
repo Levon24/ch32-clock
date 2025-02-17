@@ -3,7 +3,7 @@
 #include "clock.h"
 
 /* Global defines */
-#define _TIM1_ARR   ((100 - 1) - 1)
+#define _TIM1_ARR   ((1000 - 1) - 1)
 #define _TIM1_PSC   ((SystemCoreClock / 1000) - 1)
 #define _TIM2_ARR   ((1000 - 1) + 3 /* Correction */)
 #define _TIM2_PSC   ((SystemCoreClock / 1000) - 1)
@@ -64,10 +64,11 @@ void TIM_InitTimers() {
   RCC_APB1PeriphClockCmd(RCC_APB2Periph_TIM1, ENABLE);
 
   TIM_TimeBaseInitTypeDef TIMBase_InitStruct1 = {0};
-  TIMBase_InitStruct1.TIM_Period = _TIM1_ARR;
-  TIMBase_InitStruct1.TIM_Prescaler = _TIM1_PSC;
-  TIMBase_InitStruct1.TIM_CounterMode = TIM_CounterMode_Up;
   TIMBase_InitStruct1.TIM_ClockDivision = TIM_CKD_DIV1;
+  TIMBase_InitStruct1.TIM_Prescaler = _TIM1_PSC;
+  TIMBase_InitStruct1.TIM_Period = _TIM1_ARR;
+  TIMBase_InitStruct1.TIM_CounterMode = TIM_CounterMode_Up;
+  TIMBase_InitStruct1.TIM_RepetitionCounter = 0;
   TIM_TimeBaseInit(TIM1, &TIMBase_InitStruct1);
 
   TIM_ITConfig(TIM1, TIM_IT_Update, ENABLE);
@@ -75,7 +76,7 @@ void TIM_InitTimers() {
   NVIC_InitTypeDef NVIC_InitStruct1 = {0};
   NVIC_InitStruct1.NVIC_IRQChannel = TIM1_UP_IRQn;
   NVIC_InitStruct1.NVIC_IRQChannelPreemptionPriority = 0;
-  NVIC_InitStruct1.NVIC_IRQChannelSubPriority = 0;
+  NVIC_InitStruct1.NVIC_IRQChannelSubPriority = 1;
   NVIC_InitStruct1.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStruct1);
 
@@ -85,18 +86,18 @@ void TIM_InitTimers() {
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
     
   TIM_TimeBaseInitTypeDef TIMBase_InitStruct2 = {0};
-  TIMBase_InitStruct2.TIM_Period = _TIM2_ARR;
-  TIMBase_InitStruct2.TIM_Prescaler = _TIM2_PSC;
-  TIMBase_InitStruct2.TIM_CounterMode = TIM_CounterMode_Up;
   TIMBase_InitStruct2.TIM_ClockDivision = TIM_CKD_DIV1;
+  TIMBase_InitStruct2.TIM_Prescaler = _TIM2_PSC;
+  TIMBase_InitStruct2.TIM_Period = _TIM2_ARR;
+  TIMBase_InitStruct2.TIM_CounterMode = TIM_CounterMode_Up;
   TIM_TimeBaseInit(TIM2, &TIMBase_InitStruct2);
 
   TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
 
   NVIC_InitTypeDef NVIC_InitStruct2 = {0};
   NVIC_InitStruct2.NVIC_IRQChannel = TIM2_IRQn;
-  NVIC_InitStruct2.NVIC_IRQChannelPreemptionPriority = 1;
-  NVIC_InitStruct2.NVIC_IRQChannelSubPriority = 0;
+  NVIC_InitStruct2.NVIC_IRQChannelPreemptionPriority = 0;
+  NVIC_InitStruct2.NVIC_IRQChannelSubPriority = 1;
   NVIC_InitStruct2.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStruct2);
   
@@ -108,13 +109,11 @@ void TIM_InitTimers() {
  */
 void TIM1_UP_IRQHandler(void) __attribute__((interrupt("WCH-Interrupt-fast")));
 void TIM1_UP_IRQHandler(void) {
-  if (TIM_GetITStatus(TIM1, TIM_IT_Update) == SET) {
-    if (tim1 == 0) {
-      GPIO_WriteBit(GPIOD, GPIO_Pin_0, Bit_SET);
-      tim1 = 1;
-    } else {
-      GPIO_WriteBit(GPIOD, GPIO_Pin_0, Bit_RESET);
+  if (TIM_GetITStatus(TIM1, TIM_IT_Update) != RESET) {
+    if (tim1 > 0) {
       tim1 = 0;
+    } else {
+      tim1 = 1;
     }
 
     TIM_ClearITPendingBit(TIM1, TIM_IT_Update);
@@ -402,7 +401,7 @@ int main(void) {
     tm1637_writeSegments(segments);
     
     // LED
-    //GPIO_WriteBit(GPIOD, GPIO_Pin_0, (flash == 1) ? Bit_SET : Bit_RESET);
+    GPIO_WriteBit(GPIOD, GPIO_Pin_0, (tim1 == 1) ? Bit_SET : Bit_RESET);
 
     // Update 
     if (flash == 0) {
