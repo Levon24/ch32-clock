@@ -61,7 +61,7 @@ void GPIO_InitPorts(void) {
  */
 void TIM_InitTimers() {
   // Timer 1
-  RCC_APB1PeriphClockCmd(RCC_APB2Periph_TIM1, ENABLE);
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1, ENABLE);
 
   TIM_TimeBaseInitTypeDef TIMBase_InitStruct1 = {0};
   TIMBase_InitStruct1.TIM_ClockDivision = TIM_CKD_DIV1;
@@ -76,7 +76,7 @@ void TIM_InitTimers() {
   NVIC_InitTypeDef NVIC_InitStruct1 = {0};
   NVIC_InitStruct1.NVIC_IRQChannel = TIM1_UP_IRQn;
   NVIC_InitStruct1.NVIC_IRQChannelPreemptionPriority = 0;
-  NVIC_InitStruct1.NVIC_IRQChannelSubPriority = 1;
+  NVIC_InitStruct1.NVIC_IRQChannelSubPriority = 0;
   NVIC_InitStruct1.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStruct1);
 
@@ -115,6 +115,7 @@ void TIM1_UP_IRQHandler(void) {
     } else {
       tim1 = 1;
     }
+    GPIO_WriteBit(GPIOD, GPIO_Pin_0, (tim1 == 1) ? Bit_SET : Bit_RESET);
 
     TIM_ClearITPendingBit(TIM1, TIM_IT_Update);
   }
@@ -401,7 +402,7 @@ int main(void) {
     tm1637_writeSegments(segments);
     
     // LED
-    GPIO_WriteBit(GPIOD, GPIO_Pin_0, (tim1 == 1) ? Bit_SET : Bit_RESET);
+    //GPIO_WriteBit(GPIOD, GPIO_Pin_0, (tim1 == 1) ? Bit_SET : Bit_RESET);
 
     // Update 
     if (flash == 0) {
