@@ -1,7 +1,7 @@
 #include "debug.h"
 #include "rtttl.h"
 
-#define SILENT_FREQ 100
+#define SILENT_FREQ 1000
 
 /* Nota -> Freq */
 const uint16_t freq[] = {
@@ -14,14 +14,13 @@ const uint16_t freq[] = {
 
 // Алиса - Трасса Е95
 const _melody_t alisa_trassa_e95 = {
-  4, 125, {
-    4,  G|O2,  8,  E|O2,  16, P,     16, G|O2,   8,  F_|O2, 16, P,
-    16, D|O2,  4,  A|O1,  8,  B|O1,  16, P,      16, C|O2,  8,  D|O2,
-    8,  G|O2,  8,  F_|O2, 16, P,     16, A|O2,   16, G|O2,  16, F_|O2,
-    16, E|O2,  16, D|O2,  4,  G|O2,  8,  E|O2,   16, P,     16, G|O2,
-    8,  F_|O2, 16, P,     16, D|O2,  4,  A|O1,   8,  B|O1,  16, P,
-    16, C|O2,  8,  D|O2,  8,  G|O2,  8,  F_|O2,  16, P,     16, A|O2,
-    16, G|O2,  16, F_|O2, 16, E|O2,  16, D|O2,   2,  E|O2,  0, 0
+  4, 135, {
+    4,  G|O2,  8,  E|O2,   16, P,     16, G|O2,   8,  F_|O2, 16, P,      16, D|O2,  4,  A|O1,
+    8,  B|O1,  16, P,      16, C|O2,  8,  D|O2,   8,  G|O2,  8,  F_|O2,  16, P,     16, A|O2,
+    16, G|O2,  16, F_|O2,  16, E|O2,  16, D|O2,   4,  G|O2,  8,  E|O2,   16, P,     16, G|O2,
+    8,  F_|O2, 16, P,      16, D|O2,  4,  A|O1,   8,  B|O1,  16, P,      16, C|O2,  8,  D|O2,
+    8,  G|O2,  8,  F_|O2,  16, P,     16, A|O2,   16, G|O2,  16, F_|O2,  16, E|O2,  16, D|O2,
+    2,  E|O2,  0, 0
   }
 };
 
@@ -57,11 +56,11 @@ void setup(uint16_t f) {
 void calculate() {
   uint16_t f = freq[melody->notes[pos].nota];
   if (f > 0) {
-    length = ((f * 2 * melody->notes[pos].duration) / melody->duration);
+    length = (((f * 2 * melody->duration) / melody->notes[pos].duration) * 60) / melody->tempo;
     speaker = 1;
     setup(f);
   } else {
-    length = ((SILENT_FREQ * 2) / melody->notes[pos].duration) / melody->duration;
+    length = (((SILENT_FREQ * 2 * melody->duration) / melody->notes[pos].duration) * 60) / melody->tempo;
     speaker = 0;
     setup(SILENT_FREQ);
   }
@@ -75,7 +74,7 @@ void rtttl_tick() {
     return;
   }
 
-  if (melody->notes[pos].nota == 0) {
+  if (melody->notes[pos].duration == 0) {
     melody = NULL;
     pos = 0;
     ticks = 0;
