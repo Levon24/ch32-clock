@@ -24,7 +24,7 @@ enum _state {
   setup_alarm_time
 };
 
-/* Defined structs */
+/* Defined structures */
 typedef struct {
   uint8_t hour;
   uint8_t minute;

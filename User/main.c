@@ -1,12 +1,11 @@
 #include "debug.h"
 #include "tm1637.h"
 #include "clock.h"
+#include "rtttl.h"
 
 /* Global defines */
-#define _TIM1_ARR   (3 - 1)
-#define _TIM1_PSC   ((SystemCoreClock / 1000) - 1)
-#define _TIM2_ARR   ((1000 - 1) + 3 /* Correction */)
 #define _TIM2_PSC   ((SystemCoreClock / 1000) - 1)
+#define _TIM2_ARR   ((1000 - 1) + 1 /* Correction */)
 
 #define BUTTON_SETTINGS   GPIO_Pin_3
 #define BUTTON_NEXT       GPIO_Pin_2
@@ -22,9 +21,7 @@ uint8_t flash = 0;
 enum _state state = show_time;
 uint8_t position = 0;
 
-uint8_t speaker = 0;
-uint32_t ticks = 0;
-uint32_t max = 1000; 
+extern uint8_t tm1637_brightness;
 
 /**
  * Init GPIO Ports
@@ -65,14 +62,6 @@ void TIM_InitTimers() {
   // Timer 1
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1, ENABLE);
 
-  TIM_TimeBaseInitTypeDef TIMBase_InitStruct1 = {0};
-  TIMBase_InitStruct1.TIM_ClockDivision = TIM_CKD_DIV1;
-  TIMBase_InitStruct1.TIM_Prescaler = _TIM1_PSC;
-  TIMBase_InitStruct1.TIM_Period = _TIM1_ARR;
-  TIMBase_InitStruct1.TIM_CounterMode = TIM_CounterMode_Up;
-  TIMBase_InitStruct1.TIM_RepetitionCounter = 0;
-  TIM_TimeBaseInit(TIM1, &TIMBase_InitStruct1);
-
   TIM_ITConfig(TIM1, TIM_IT_Update, ENABLE);
 
   NVIC_InitTypeDef NVIC_InitStruct1 = {0};
@@ -81,8 +70,6 @@ void TIM_InitTimers() {
   NVIC_InitStruct1.NVIC_IRQChannelSubPriority = 0;
   NVIC_InitStruct1.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStruct1);
-
-  TIM_Cmd(TIM1, ENABLE);
 
   // Timer 2
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
@@ -112,18 +99,7 @@ void TIM_InitTimers() {
 void TIM1_UP_IRQHandler(void) __attribute__((interrupt("WCH-Interrupt-fast")));
 void TIM1_UP_IRQHandler(void) {
   if (TIM_GetITStatus(TIM1, TIM_IT_Update) != RESET) {
-    if (ticks < max) {
-      if (speaker > 0) {
-        speaker = 0;
-      } else {
-        speaker = 1;
-      }
-      GPIO_WriteBit(GPIOD, GPIO_Pin_2, (speaker == 1) ? Bit_SET : Bit_RESET);
-
-      ticks++;
-    } else {
-      speaker = 0;
-    }
+    rtttl_tick();
 
     TIM_ClearITPendingBit(TIM1, TIM_IT_Update);
   }
@@ -165,6 +141,7 @@ int main(void) {
 
   //tm1637_set_brightness(5);
   //tm1637_write_segments(segments);
+  rtttl_play(0);
 
   while (1) {
     Delay_Ms(100);
@@ -377,8 +354,6 @@ int main(void) {
         break;
 
       case setup_brightness: {
-          uint8_t b = tm1637_getBrightness();
-
           segments[0] = 0b01111111; // B
           segments[1] = 0b01110111; // R
           segments[2] = 0;
@@ -387,7 +362,7 @@ int main(void) {
           if (position == POSITION_DEFAULT && flash) {
             segments[5] = 0;
           } else {
-            segments[5] = tm1637_toDigit(b);
+            segments[5] = tm1637_toDigit(tm1637_brightness);
           }
           
           if ((buttons & BUTTON_SETTINGS) == BUTTON_PRESSED) {
@@ -395,13 +370,13 @@ int main(void) {
             position = POSITION_DEFAULT;
           } 
           if ((buttons & BUTTON_UP) == BUTTON_PRESSED) {
-            if (b < 7) {
-              tm1637_setBrightness(++b);
+            if (tm1637_brightness < 7) {
+              tm1637_brightness++;
             }
           }
           if ((buttons & BUTTON_DOWN) == BUTTON_PRESSED) {
-            if (b > 0) {
-              tm1637_setBrightness(--b);
+            if (tm1637_brightness > 0) {
+              tm1637_brightness--;
             }
           }
         }

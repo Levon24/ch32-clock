@@ -132,24 +132,6 @@ void tm1637_writeSegments(const uint8_t *segments) {
 }
 
 /**
- * Set brightness level
- * 
- * @param level 
- */
-void tm1637_setBrightness(uint8_t level) {
-  tm1637_brightness = TM1637_BRIGHTNESS_MASK & level;
-}
-
-/**
- * Get brightness level
- * 
- * @param level 
- */
-uint8_t tm1637_getBrightness() {
-  return tm1637_brightness;
-}
-
-/**
  * Convert byte to digit
  * 
  * @param value 
