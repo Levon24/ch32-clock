@@ -598,7 +598,7 @@
 		"program": true,
 		"verify": true,
 		"reset": true,
-		"sdiPrintf": true,
+		"sdiPrintf": false,
 		"disablepowerout": false,
 		"clearcodeflash": false,
 		"disablecodeprotect": false,

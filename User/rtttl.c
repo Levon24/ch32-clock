@@ -1,9 +1,9 @@
 #include "debug.h"
 #include "rtttl.h"
 
-#define _FREQ_OUT   80000
+#define _FREQ_OUT   (20000 /* Hz */ * 2 /* Ticks */)
 #define _FREQ_TICKS (_FREQ_OUT / 2)
-#define _FREQ_LEN   (2 * 60 * 4) // 2 ticks * 60 sec * 4
+#define _FREQ_LEN   (2 /* Ticks */ * 60 /* Per minute */ * 4)
 #define _TIM1_PSC   ((SystemCoreClock / _FREQ_OUT) - 1)
 
 #define DURATION      64
@@ -66,7 +66,7 @@ void setup(uint16_t f) {
   TIM_TimeBaseInitTypeDef TIMBase_InitStruct1 = {0};
   TIMBase_InitStruct1.TIM_ClockDivision = TIM_CKD_DIV1;
   TIMBase_InitStruct1.TIM_Prescaler = _TIM1_PSC;
-  TIMBase_InitStruct1.TIM_Period = (_FREQ_TICKS / f);
+  TIMBase_InitStruct1.TIM_Period = ((_FREQ_TICKS / f) - 1);
   TIMBase_InitStruct1.TIM_CounterMode = TIM_CounterMode_Up;
   TIMBase_InitStruct1.TIM_RepetitionCounter = 0;
   TIM_TimeBaseInit(TIM1, &TIMBase_InitStruct1);
@@ -83,7 +83,7 @@ void calculate() {
   if (f > 0) {
     length = (((uint32_t) f) * _FREQ_LEN * melody->notes[pos].duration) / DURATION / melody->tempo;
     speaker = 1;
-    printf("Duration: %d, Nota: %d -> Freq: %d, Length: %d.\r\n", melody->notes[pos].duration, melody->notes[pos].nota, f, length);
+    //printf("Duration: %d, Nota: %d -> Freq: %d, Length: %d.\r\n", melody->notes[pos].duration, melody->notes[pos].nota, f, length);
     setup(f);
   } else {
     length = (((uint32_t) SILENT_FREQ) * _FREQ_LEN * melody->notes[pos].duration) / DURATION / melody->tempo;
