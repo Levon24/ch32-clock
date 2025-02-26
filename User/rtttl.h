@@ -1,5 +1,5 @@
-#ifndef _MUSIC_H
-#define _MUSIC_H
+#ifndef _RTTTL_H
+#define _RTTTL_H
 
 #ifdef __cplusplus
  extern "C" {
@@ -33,11 +33,6 @@ typedef struct {
   uint8_t duration;
   uint8_t nota;
 } _nota_t;
-
-typedef struct {
-  uint8_t tempo;
-  _nota_t notes[];
-} _melody_t;
 
 /* Functions */
 void rtttl_tick();

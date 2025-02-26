@@ -1,5 +1,6 @@
 #include "debug.h"
 #include "rtttl.h"
+#include "melody.h"
 
 #define _FREQ_OUT   (20000 /* Hz */ * 2 /* Ticks */)
 #define _FREQ_TICKS (_FREQ_OUT / 2)
@@ -18,43 +19,14 @@ const uint16_t freq[] = {
     0,  2093, 2218, 2349, 2489, 2637, 2794, 2960, 3136, 3322, 3520, 3729, 3951, 0,  0,  0,
 };
 
-// Мобильник (из Бумера)
-const _melody_t mobil_bumer = {
-  180, {
-    8,	E|O2,		16,	G|O2,		16,	P|O2,		8,	G|O2,		16,	E|O2,		16,	P|O2,		8,	A|O2,		8,	G|O2,
-    8,	A|O2,		8,	G|O2,		8,	A|O2,		8,	G|O2,		8,	A|O2,		8,	G|O2,		8,	A|O2,		16,	B|O2
-  }
-};
-
-// Белые розы
-const _melody_t white_roses = {
-  120, {
-    8,	B|O1,		8,	B|O1,		8,	B|O1,		16,	B|O1,		16,	F_|O1,	8,	P|O2,		8,	B|O1,		8,	B|O1,
-    8,	B|O1,		16,	B|O1,		16,	F_|O1,	8,	P|O2,		16,	B|O1,		16,	G|O1,		8,	F_|O1,	8,	G|O1,
-    8,	F_|O1,	16,	G|O1,		8,	P|O2,		8,	P|O2,		8,	P|O2,		8,	A|O1,		8,	A|O1,		8,	A|O1,
-    16,	A|O1,		16,	E|O1,		8,	P|O2,		8,	A|O1,		8,	A|O1,		8,	A|O1,		16,	A|O1,		16,	E|O1,
-    8,	P|O2,		16,	A|O1,		16,	F|O1,		8,	E|O1,		8,	F|O1,		8,	E|O1,		16,	F|O1
-  }
-};
-
-// ДДТ - Оcень
-const _melody_t ddt_autumn = {
-  120, {
-    8,	E|O2,		4,	C|O2,		12,	B|O1,		8,	A|O1,		12,	E|O2,		12,	B|O1,		4,	B|O1,		8,	C|O2,
-    12,	B|O1,		48,	A|O1,		8,	A|O1,		4,	A|O1,		12,	A|O1,		8,	A|O1,		12,	A|O1,		8,	A|O1,
-    4,	C_|O2,	12,	E|O2,		12,	G|O2,		48,	F|O2,		12,	D|O2,		4,	D|O2,		8,	D|O2,		8,	D|O2,
-    8,	G|O2,		8,	F|O2,		12,	E|O2,		12,	D|O2,		8,	E|O2,		8,	E|O2,		4,	E|O2,		8,	D|O2,
-    12,	C|O2,		16,	A|O1,		8,	P|O2,		8,	B|O1,		8,	B|O1,		8,	G|O2,		8,	F|O2,		8,	E|O1,
-    4,	E|O1,		8,	E|O2,		12,	C|O2,		12,	B|O1,		32,	A|O1
-  }
-};
-
 const _melody_t *melody;
 uint8_t pos;
 
 uint32_t ticks;
 uint32_t length;
 uint8_t speaker;
+
+extern const _melody_t *melodies[];
 
 /**
  * Setup tim #1 to generate frequeancy
@@ -129,7 +101,7 @@ void rtttl_tick() {
  * @param num 
  */
 void rtttl_play(uint8_t num) {
-  melody = &ddt_autumn;
+  melody = melodies[10];
   pos = 0;
 
   calculate();
