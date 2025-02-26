@@ -9,10 +9,11 @@
 #define SPEAKER_PIN   GPIO_Pin_2
 
 /* Octava */
-#define O1  0x00
-#define O2  0x10
-#define O3  0x20
-#define O4  0x30
+#define O0  0x00
+#define O1  0x10
+#define O2  0x20
+#define O3  0x30
+#define O4  0x40
 
 /* Nota */
 #define P   0x00 // Pause
