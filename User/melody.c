@@ -9,27 +9,24 @@ const _melody_t melody00 = {
   }
 };
 
-// Белые розы
+// Мальчишник
 const _melody_t melody01 = {
-  120, {
-    8,	B|O1,		8,	B|O1,		8,	B|O1,		16,	B|O1,		16,	F_|O1,	8,	P|O2,		8,	B|O1,		8,	B|O1,
-    8,	B|O1,		16,	B|O1,		16,	F_|O1,	8,	P|O2,		16,	B|O1,		16,	G|O1,		8,	F_|O1,	8,	G|O1,
-    8,	F_|O1,	16,	G|O1,		8,	P|O2,		8,	P|O2,		8,	P|O2,		8,	A|O1,		8,	A|O1,		8,	A|O1,
-    16,	A|O1,		16,	E|O1,		8,	P|O2,		8,	A|O1,		8,	A|O1,		8,	A|O1,		16,	A|O1,		16,	E|O1,
-    8,	P|O2,		16,	A|O1,		16,	F|O1,		8,	E|O1,		8,	F|O1,		8,	E|O1,		16,	F|O1,   0,  0
-  }
+	250, {
+		16,	A|O1,		16,	E|O2,		16,	A|O1,		16,	B|O1,		8,	P|O2,		8,	P|O2,		16,	C|O2,		16,	B|O1,		
+		8,	P|O2,		8,	P|O2,		16,	G|O1,		16,	B|O1,		16,	G|O1,		16,	E|O1,		16,	E|O1,		16,	B|O1,		
+		16,	A|O1,		8,	P|O2,		8,	P|O2,		16,	A|O1,		16,	E|O2,		16,	A|O1,		16,	B|O1,		8,	P|O2,		
+		8,	P|O2,		16,	C|O2,		16,	B|O1,		8,	P|O2,		8,	P|O2,		16,	G|O1,		16,	B|O1,		16,	G|O1,		
+		16,	E|O1,		16,	E|O1,		16,	B|O1,		16,	A|O1,		0,  0
+	}
 };
 
-// ДДТ: Оcень
+// Моисеев Б., Н.Трубач - Голубая луна
 const _melody_t melody02 = {
-  120, {
-    8,	E|O2,		4,	C|O2,		12,	B|O1,		8,	A|O1,		12,	E|O2,		12,	B|O1,		4,	B|O1,		8,	C|O2,
-    12,	B|O1,		48,	A|O1,		8,	A|O1,		4,	A|O1,		12,	A|O1,		8,	A|O1,		12,	A|O1,		8,	A|O1,
-    4,	C_|O2,	12,	E|O2,		12,	G|O2,		48,	F|O2,		12,	D|O2,		4,	D|O2,		8,	D|O2,		8,	D|O2,
-    8,	G|O2,		8,	F|O2,		12,	E|O2,		12,	D|O2,		8,	E|O2,		8,	E|O2,		4,	E|O2,		8,	D|O2,
-    12,	C|O2,		16,	A|O1,		8,	P|O2,		8,	B|O1,		8,	B|O1,		8,	G|O2,		8,	F|O2,		8,	E|O1,
-    4,	E|O1,		8,	E|O2,		12,	C|O2,		12,	B|O1,		32,	A|O1,   0,  0
-  }
+	180, {
+		16,	C|O2,		16,	D_|O2,	8,	G|O2,		8,	D_|O2,	8,	C|O2,		16,	F|O2,		8,	P|O2,		8,	P|O2,		
+		8,	P|O2,		8,	P|O2,		8,	P|O2,		8,	P|O2,		8,	P|O2,		16,	A_|O1,	16,	D|O2,		8,	F|O2,		
+		8,	D|O2,		8,	A_|O1,	16,	D_|O2,	8,	D|O2,		16,	C|O2,		0,  0
+	}
 };
 
 // Europe: Final countdown
@@ -401,71 +398,58 @@ const _melody_t melody33 = {
 	}
 };
 
-// Лада
-const _melody_t melody34 = {
-	120, {
-		4,	G|O3,		4,	P|O2,		4,	G|O3,		4,	P|O2,		4,	G|O3,		4,	P|O2,		4,	G|O3,		4,	P|O2,		
-		16,	G|O3,		16,	G|O3,		16,	A_|O3,		8,	P|O2,		16,	G|O3,		8,	P|O2,		16,	P|O2,		4,	G_|O3,		
-		4,	P|O2,		4,	G_|O3,		4,	P|O2,		4,	G_|O3,		4,	P|O2,		4,	G_|O3,		4,	P|O2,		16,	G_|O3,		
-		16,	G_|O3,		16,	B|O3,		8,	P|O2,		16,	G_|O3,		8,	P|O2,		16,	P|O2,		4,	G|O3,		4,	P|O2,		
-		4,	G|O3,		4,	P|O2,		4,	G|O3,		4,	P|O2,		4,	G|O3,		4,	P|O2,		16,	G|O3,		16,	G|O3,		
-		16,	A_|O3,		8,	P|O2,		16,	G|O3,		8,	P|O2,		16,	P|O2,		16,	A_|O3,		16,	A_|O3,		32,	P|O2,		
-		
-	}
-};
-
 // Ласковый май - Белые розы
-const _melody_t melody35 = {
-	120, {
-		8,	B|O1,		8,	B|O1,		8,	B|O1,		16,	B|O1,		16,	F_|O1,		8,	P|O2,		8,	B|O1,		8,	B|O1,		
-		8,	B|O1,		16,	B|O1,		16,	F_|O1,		8,	P|O2,		16,	B|O1,		16,	G|O1,		8,	F_|O1,		8,	G|O1,		
-		8,	F_|O1,		16,	G|O1,		8,	P|O2,		8,	P|O2,		8,	P|O2,		8,	A|O1,		8,	A|O1,		8,	A|O1,		
+const _melody_t melody34 = {
+	180, {
+		8,	B|O1,		8,	B|O1,		8,	B|O1,		16,	B|O1,		16,	F_|O1,	8,	P|O2,		8,	B|O1,		8,	B|O1,		
+		8,	B|O1,		16,	B|O1,		16,	F_|O1,	8,	P|O2,		16,	B|O1,		16,	G|O1,		8,	F_|O1,	8,	G|O1,		
+		8,	F_|O1,	16,	G|O1,		8,	P|O2,		8,	P|O2,		8,	P|O2,		8,	A|O1,		8,	A|O1,		8,	A|O1,		
 		16,	A|O1,		16,	E|O1,		8,	P|O2,		8,	A|O1,		8,	A|O1,		8,	A|O1,		16,	A|O1,		16,	E|O1,		
-		8,	P|O2,		16,	A|O1,		16,	F|O1,		8,	E|O1,		8,	F|O1,		8,	E|O1,		16,	F|O1,		
+		8,	P|O2,		16,	A|O1,		16,	F|O1,		8,	E|O1,		8,	F|O1,		8,	E|O1,		16,	F|O1,		0,  0
 	}
 };
 
 // Лебединое озеро
-const _melody_t melody36 = {
+const _melody_t melody35 = {
 	120, {
-		16,	D|O3,		8,	G|O2,		8,	A|O2,		8,	A_|O2,		8,	C|O3,		16,	D|O3,		8,	A_|O2,		16,	D|O3,		
-		8,	A_|O2,		16,	D|O3,		8,	G|O2,		8,	A_|O2,		8,	G|O2,		8,	D_|O2,		8,	A_|O2,		16,	G|O2,		
-		8,	C|O3,		8,	A_|O2,		8,	A|O2,		16,	D|O3,		8,	G|O2,		8,	A|O2,		8,	A_|O2,		8,	C|O3,		
-		16,	D|O3,		8,	A_|O2,		16,	D|O3,		8,	A_|O2,		16,	D|O3,		8,	G|O2,		8,	A_|O2,		8,	G|O2,		
-		8,	D_|O2,		8,	A_|O2,		16,	G|O2,		
+		16,	D|O3,		8,	G|O2,		8,	A|O2,		8,	A_|O2,	8,	C|O3,		16,	D|O3,		8,	A_|O2,	16,	D|O3,		
+		8,	A_|O2,	16,	D|O3,		8,	G|O2,		8,	A_|O2,	8,	G|O2,		8,	D_|O2,	8,	A_|O2,	16,	G|O2,		
+		8,	C|O3,		8,	A_|O2,	8,	A|O2,		16,	D|O3,		8,	G|O2,		8,	A|O2,		8,	A_|O2,	8,	C|O3,		
+		16,	D|O3,		8,	A_|O2,	16,	D|O3,		8,	A_|O2,	16,	D|O3,		8,	G|O2,		8,	A_|O2,	8,	G|O2,		
+		8,	D_|O2,	8,	A_|O2,	16,	G|O2,		0,  0
 	}
 };
 
 // Лезгинка
-const _melody_t melody37 = {
+const _melody_t melody36 = {
 	120, {
 		8,	A|O1,		4,	C|O2,		8,	E|O2,		8,	F|O2,		8,	E|O2,		8,	C|O2,		8,	A|O1,		4,	P|O2,		
 		4,	E|O2,		4,	E|O2,		4,	P|O2,		4,	E|O2,		8,	D|O2,		8,	C|O2,		8,	D|O2,		8,	B|O1,		
 		8,	G|O1,		8,	P|O2,		8,	G|O1,		4,	B|O1,		8,	D|O2,		8,	E|O2,		8,	D|O2,		8,	B|O1,		
 		8,	G|O1,		4,	P|O2,		4,	D|O2,		4,	D|O2,		4,	P|O2,		4,	D|O2,		8,	C|O2,		8,	B|O1,		
-		16,	A|O1,		8,	P|O2,		
+		16,	A|O1,		8,	P|O2,		0,  0
 	}
 };
 
 // Ленин всегда живой
-const _melody_t melody38 = {
-	120, {
+const _melody_t melody37 = {
+	250, {
 		16,	A|O1,		8,	P|O2,		16,	A|O1,		8,	P|O2,		8,	P|O2,		8,	G|O1,		8,	P|O2,		8,	A_|O1,		
 		8,	P|O2,		8,	A|O1,		8,	P|O2,		16,	G|O1,		8,	P|O2,		8,	P|O2,		16,	F|O1,		8,	P|O2,		
 		16,	F|O1,		8,	P|O2,		8,	P|O2,		8,	E|O1,		8,	P|O2,		8,	G|O1,		8,	P|O2,		8,	F|O1,		
-		8,	P|O2,		16,	E|O1,		
+		8,	P|O2,		16,	E|O1,		0,  0
 	}
 };
 
 // Леприконсы - Хали гали Паратрупер
-const _melody_t melody39 = {
-	120, {
-		8,	F_|O1,		16,	B|O1,		8,	P|O2,		8,	F_|O1,		16,	C_|O2,		8,	P|O2,		8,	F_|O1,		16,	D|O2,		
-		8,	P|O2,		8,	D|O2,		8,	D|O2,		8,	C_|O2,		8,	B|O1,		8,	A|O1,		8,	B|O1,		8,	P|O2,		
-		16,	F_|O2,		8,	P|O2,		8,	E|O2,		8,	D|O2,		8,	B|O1,		8,	E|O2,		8,	D|O2,		8,	B|O1,		
-		16,	P|O2,		8,	F_|O1,		16,	B|O1,		8,	P|O2,		8,	F_|O1,		16,	C_|O2,		8,	P|O2,		8,	F_|O1,		
-		16,	D|O2,		8,	P|O2,		8,	D|O2,		8,	D|O2,		8,	C_|O2,		8,	B|O1,		8,	A|O1,		8,	B|O1,		
-		8,	P|O2,		32,	A|O2,		8,	F_|O2,		8,	E|O2,		8,	D|O2,		8,	B|O1,		16,	P|O2,		
+const _melody_t melody38 = {
+	180, {
+		8,	F_|O1,	16,	B|O1,		8,	P|O2,		8,	F_|O1,	16,	C_|O2,	8,	P|O2,		8,	F_|O1,	16,	D|O2,		
+		8,	P|O2,		8,	D|O2,		8,	D|O2,		8,	C_|O2,	8,	B|O1,		8,	A|O1,		8,	B|O1,		8,	P|O2,		
+		16,	F_|O2,	8,	P|O2,		8,	E|O2,		8,	D|O2,		8,	B|O1,		8,	E|O2,		8,	D|O2,		8,	B|O1,		
+		16,	P|O2,		8,	F_|O1,	16,	B|O1,		8,	P|O2,		8,	F_|O1,	16,	C_|O2,	8,	P|O2,		8,	F_|O1,		
+		16,	D|O2,		8,	P|O2,		8,	D|O2,		8,	D|O2,		8,	C_|O2,	8,	B|O1,		8,	A|O1,		8,	B|O1,		
+		8,	P|O2,		32,	A|O2,		8,	F_|O2,	8,	E|O2,		8,	D|O2,		8,	B|O1,		16,	P|O2,		0,  0
 	}
 };
 
@@ -475,5 +459,5 @@ const _melody_t *melodies[] = {
   &melody00, &melody01, &melody02, &melody03, &melody04, &melody05, &melody06, &melody07, &melody08, &melody09,
   &melody10, &melody11, &melody12, &melody13, &melody14, &melody15, &melody16, &melody17, &melody18, &melody19,
   &melody20, &melody21, &melody22, &melody23, &melody24, &melody25, &melody26, &melody27, &melody28, &melody29,
-  &melody30, &melody31, &melody32, &melody33, &melody34, &melody35, &melody36, &melody37, &melody38, &melody39,
+  &melody30, &melody31, &melody32, &melody33, &melody34, &melody35, &melody36, &melody37, &melody38,
 };

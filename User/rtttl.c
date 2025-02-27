@@ -102,7 +102,7 @@ void rtttl_tick() {
  * @param num 
  */
 void rtttl_play(uint8_t num) {
-  melody = melodies[33];
+  melody = melodies[38];
   pos = 0;
 
   calculate();
