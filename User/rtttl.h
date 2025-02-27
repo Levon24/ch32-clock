@@ -29,6 +29,7 @@
 #define A   0x0A // La
 #define A_  0x0B // La #
 #define B   0x0C // Ti
+#define H   0x0C // Si
 
 typedef struct {
   uint8_t duration;
