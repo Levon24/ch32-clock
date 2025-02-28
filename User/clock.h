@@ -5,6 +5,7 @@
  extern "C" {
 #endif 
 
+///////////////////////////////////////////////////////////////////////////////
 #define POSITION_DEFAULT 0
 #define POSITION_HOUR    0
 #define POSITION_MINUTE  1
@@ -13,7 +14,9 @@
 #define POSITION_MONTH   1
 #define POSITION_YEAR    2
 
-/* Defined enums */
+#define ALARMS           20
+
+///////////////////////////////////////////////////////////////////////////////
 enum _state {
   show_time, 
   show_date,
@@ -25,7 +28,7 @@ enum _state {
   setup_alarm_music
 };
 
-/* Defined structures */
+///////////////////////////////////////////////////////////////////////////////
 typedef struct {
   uint8_t hour;
   uint8_t minute;
@@ -41,11 +44,11 @@ typedef struct {
   uint8_t melody;
 } _alarm_t;
 
+///////////////////////////////////////////////////////////////////////////////
+void clock_tick();
+uint8_t clock_monthDays();
 
-/* Defined functions */
-void clock_tick(_clock_t *clock);
-uint8_t calculateMonthDays(_clock_t *clock);
-
+///////////////////////////////////////////////////////////////////////////////
 #ifdef __cplusplus
 }
 #endif

@@ -4,7 +4,7 @@
 #include "rtttl.h"
 #include "melody.h"
 
-/* Global defines */
+///////////////////////////////////////////////////////////////////////////////
 #define _TIM2_CORECTION   10
 #define _TIM2_PSC         ((SystemCoreClock / 1000) - 1)
 #define _TIM2_ARR         ((1000 - 1) + _TIM2_CORECTION)
@@ -15,20 +15,17 @@
 #define BUTTON_DOWN       GPIO_Pin_6
 #define BUTTON_PRESSED    0
 
-#define ALARMS            20
+///////////////////////////////////////////////////////////////////////////////
+extern _clock_t clock;
 
-/* Global Variables */
-_clock_t clock = {14, 12, 59, 30, 1, 25};
 uint8_t segments[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 uint8_t flash = 0;
 
 enum _state state = show_time;
 uint8_t position = 0;
 
+extern _alarm_t alarms[ALARMS];
 uint8_t alarm = 0;
-_alarm_t alarms[ALARMS] = {
-  {8, 0, 91}
-};
 
 extern uint8_t tm1637_brightness;
 
@@ -120,7 +117,7 @@ void TIM1_UP_IRQHandler(void) {
 void TIM2_IRQHandler(void) __attribute__((interrupt("WCH-Interrupt-fast")));
 void TIM2_IRQHandler(void) {
   if (TIM_GetITStatus(TIM2, TIM_IT_Update) != RESET) {
-    clock_tick(&clock);
+    clock_tick();
     
     TIM_ClearITPendingBit(TIM2, TIM_IT_Update); 
   }
@@ -313,7 +310,7 @@ int main(void) {
         switch (position) {
           case POSITION_DAY:
             if ((buttons & BUTTON_UP) == BUTTON_PRESSED) {
-              if (clock.day == calculateMonthDays(&clock)) {
+              if (clock.day == clock_monthDays()) {
                 clock.day = 1;
               } else {
                 clock.day++;
@@ -321,7 +318,7 @@ int main(void) {
              }
              if ((buttons & BUTTON_DOWN) == BUTTON_PRESSED) {
               if (clock.day == 1) {
-                clock.day = calculateMonthDays(&clock);
+                clock.day = clock_monthDays();
               } else {
                 clock.day--;
               }
