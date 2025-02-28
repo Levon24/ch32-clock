@@ -14,6 +14,7 @@
 
       HGFEDCBA
     0b01101101 = 0x6D = 109 = show "5"
+    0b00110111
  */
 
 #define TM1637_WRITE_DATA_TO_DISPLAY  0x40

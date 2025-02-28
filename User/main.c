@@ -2,16 +2,20 @@
 #include "tm1637.h"
 #include "clock.h"
 #include "rtttl.h"
+#include "melody.h"
 
 /* Global defines */
-#define _TIM2_PSC   ((SystemCoreClock / 1000) - 1)
-#define _TIM2_ARR   ((1000 - 1) + 1 /* Correction */)
+#define _TIM2_CORECTION   10
+#define _TIM2_PSC         ((SystemCoreClock / 1000) - 1)
+#define _TIM2_ARR         ((1000 - 1) + _TIM2_CORECTION)
 
 #define BUTTON_SETTINGS   GPIO_Pin_3
 #define BUTTON_NEXT       GPIO_Pin_2
 #define BUTTON_UP         GPIO_Pin_7
 #define BUTTON_DOWN       GPIO_Pin_6
 #define BUTTON_PRESSED    0
+
+#define ALARMS            20
 
 /* Global Variables */
 _clock_t clock = {14, 12, 59, 30, 1, 25};
@@ -20,6 +24,11 @@ uint8_t flash = 0;
 
 enum _state state = show_time;
 uint8_t position = 0;
+
+uint8_t alarm = 0;
+_alarm_t alarms[ALARMS] = {
+  {8, 0, 91}
+};
 
 extern uint8_t tm1637_brightness;
 
@@ -359,16 +368,15 @@ int main(void) {
           segments[2] = 0;
           segments[3] = 0;
           segments[4] = 0;
-          if (position == POSITION_DEFAULT && flash) {
+          if (flash) {
             segments[5] = 0;
           } else {
             segments[5] = tm1637_toDigit(tm1637_brightness);
           }
           
           if ((buttons & BUTTON_SETTINGS) == BUTTON_PRESSED) {
-            state = show_time;
-            position = POSITION_DEFAULT;
-          } 
+            state = setup_alarm_no;
+          }
           if ((buttons & BUTTON_UP) == BUTTON_PRESSED) {
             if (tm1637_brightness < 7) {
               tm1637_brightness++;
@@ -378,6 +386,139 @@ int main(void) {
             if (tm1637_brightness > 0) {
               tm1637_brightness--;
             }
+          }
+        }
+        break;
+
+      case setup_alarm_no:
+        segments[0] = 0b01110111; // A
+        segments[1] = 0b00111000; // L
+        segments[2] = 0;
+        segments[3] = 0;
+        if (flash) {
+          segments[4] = 0;
+          segments[5] = 0;
+        } else {
+          segments[5] = tm1637_toDigit(alarm / 10);
+          segments[5] = tm1637_toDigit(alarm % 10);
+        }
+        
+        if ((buttons & BUTTON_SETTINGS) == BUTTON_PRESSED) {
+          state = show_time;
+        }
+        if ((buttons & BUTTON_NEXT) == BUTTON_PRESSED) {
+          state = setup_alarm_time;
+        }
+        if ((buttons & BUTTON_UP) == BUTTON_PRESSED) {
+          if (alarm < ALARMS) {
+            alarm++;
+          }
+        }
+        if ((buttons & BUTTON_DOWN) == BUTTON_PRESSED) {
+          if (alarm > 0) {
+            alarm--;
+          }
+        }
+        break;
+
+      case setup_alarm_time:
+        segments[0] = 0b00000111; // T
+        segments[1] = 0b00000001; // 
+        if (position == POSITION_HOUR && flash) {
+          segments[2] = 0;
+          segments[3] = 0;
+        } else {
+          uint8_t hour = alarms[alarm].hour;
+          segments[2] = tm1637_toDigit(hour / 10);
+          segments[3] = tm1637_toDigit(hour % 10) | TM1637_DOT;
+        }
+        if (position == POSITION_MINUTE && flash) {
+          segments[4] = 0;
+          segments[5] = 0;
+        } else {
+          uint8_t minute = alarms[alarm].minute;
+          segments[4] = tm1637_toDigit(minute / 10);
+          segments[5] = tm1637_toDigit(minute % 10) | TM1637_DOT;
+        }
+        
+        if ((buttons & BUTTON_SETTINGS) == BUTTON_PRESSED) {
+          state = show_time;
+          position = POSITION_DEFAULT;
+        } 
+        if ((buttons & BUTTON_NEXT) == BUTTON_PRESSED) {
+          if (position == POSITION_MINUTE) {
+            state = setup_alarm_music;
+            position = POSITION_DEFAULT;
+          } else {
+            position++;
+          }
+        }
+        switch (position) {
+          case POSITION_HOUR:
+            if ((buttons & BUTTON_UP) == BUTTON_PRESSED) {
+              if (alarms[alarm].hour == 23) {
+                alarms[alarm].hour = 0;
+              } else {
+                alarms[alarm].hour++;
+              }
+             }
+             if ((buttons & BUTTON_DOWN) == BUTTON_PRESSED) {
+              if (alarms[alarm].hour == 0) {
+                alarms[alarm].hour = 23;
+              } else {
+                alarms[alarm].hour--;
+              }
+            }
+            break;
+          case POSITION_MINUTE:
+            if ((buttons & BUTTON_UP) == BUTTON_PRESSED) {
+              if (alarms[alarm].minute == 59) {
+                alarms[alarm].minute = 0;
+              } else {
+                alarms[alarm].minute++;
+              }
+             }
+             if ((buttons & BUTTON_DOWN) == BUTTON_PRESSED) {
+              if (alarms[alarm].minute == 0) {
+                alarms[alarm].minute = 59;
+              } else {
+                alarms[alarm].minute--;
+              }
+            }
+            break;
+        }
+        break;
+
+      case setup_alarm_music:
+        segments[0] = 0b00110111; // M
+        segments[1] = 0b00110111; // M
+        segments[2] = 0;
+        segments[3] = 0;
+        if (flash) {
+          segments[4] = 0;
+          segments[5] = 0;
+        } else {
+          uint8_t melody = alarms[alarm].melody;
+          segments[5] = tm1637_toDigit(melody / 10);
+          segments[5] = tm1637_toDigit(melody % 10);
+        }
+        
+        if ((buttons & BUTTON_SETTINGS) == BUTTON_PRESSED) {
+          state = show_time;
+        }
+        if ((buttons & BUTTON_NEXT) == BUTTON_PRESSED) {
+          state = setup_alarm_no;
+        }
+        if ((buttons & BUTTON_UP) == BUTTON_PRESSED) {
+          if (alarms[alarm].melody < MELODIES) {
+            alarms[alarm].melody++;
+            rtttl_play(alarms[alarm].melody);
+          }
+        }
+        if ((buttons & BUTTON_DOWN) == BUTTON_PRESSED) {
+          if (alarms[alarm].melody > 0) {
+            alarms[alarm].melody--;
+            rtttl_play(alarms[alarm].melody);
           }
         }
         break;

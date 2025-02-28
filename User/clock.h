@@ -21,7 +21,8 @@ enum _state {
   setup_date,
   setup_brightness,
   setup_alarm_no,
-  setup_alarm_time
+  setup_alarm_time,
+  setup_alarm_music
 };
 
 /* Defined structures */
@@ -33,6 +34,13 @@ typedef struct {
   uint8_t month;
   uint8_t year;
 } _clock_t;
+
+typedef struct {
+  uint8_t hour;
+  uint8_t minute;
+  uint8_t melody;
+} _alarm_t;
+
 
 /* Defined functions */
 void clock_tick(_clock_t *clock);

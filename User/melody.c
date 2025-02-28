@@ -1107,7 +1107,7 @@ const _melody_t melody98 = {
 };
 
 ///////////////////////////////////////////////////////////////////////////////
-const _melody_t *melodies[] = {
+const _melody_t *melodies[MELODIES] = {
   NULL,
 	&melody01, &melody02, &melody03, &melody04, &melody05, &melody06, &melody07, &melody08, &melody09, &melody10,
 	&melody11, &melody12, &melody13, &melody14, &melody15, &melody16, &melody17, &melody18, &melody19, &melody20,
