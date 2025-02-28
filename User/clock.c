@@ -70,5 +70,7 @@ void clock_tick() {
         }
       }
     }
+
+    checkAlarms();
   }
 }
