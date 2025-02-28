@@ -378,7 +378,7 @@ int main(void) {
             state = setup_alarm_no;
           }
           if ((buttons & BUTTON_UP) == BUTTON_PRESSED) {
-            if (tm1637_brightness < 7) {
+            if (tm1637_brightness < TM1637_BRIGHTNESS_MAX) {
               tm1637_brightness++;
             }
           }
@@ -399,7 +399,7 @@ int main(void) {
           segments[4] = 0;
           segments[5] = 0;
         } else {
-          segments[5] = tm1637_toDigit(alarm / 10);
+          segments[4] = tm1637_toDigit(alarm / 10);
           segments[5] = tm1637_toDigit(alarm % 10);
         }
         
@@ -410,7 +410,7 @@ int main(void) {
           state = setup_alarm_time;
         }
         if ((buttons & BUTTON_UP) == BUTTON_PRESSED) {
-          if (alarm < ALARMS) {
+          if (alarm < (ALARMS - 1)) {
             alarm++;
           }
         }
@@ -499,7 +499,7 @@ int main(void) {
           segments[5] = 0;
         } else {
           uint8_t melody = alarms[alarm].melody;
-          segments[5] = tm1637_toDigit(melody / 10);
+          segments[4] = tm1637_toDigit(melody / 10);
           segments[5] = tm1637_toDigit(melody % 10);
         }
         
@@ -510,7 +510,7 @@ int main(void) {
           state = setup_alarm_no;
         }
         if ((buttons & BUTTON_UP) == BUTTON_PRESSED) {
-          if (alarms[alarm].melody < MELODIES) {
+          if (alarms[alarm].melody < (MELODIES - 1)) {
             alarms[alarm].melody++;
             rtttl_play(alarms[alarm].melody);
           }
@@ -526,7 +526,7 @@ int main(void) {
     tm1637_writeSegments(segments);
     
     // LED
-    GPIO_WriteBit(GPIOD, GPIO_Pin_0, (flash == 1) ? Bit_SET : Bit_RESET);
+    //GPIO_WriteBit(GPIOD, GPIO_Pin_0, (flash == 1) ? Bit_SET : Bit_RESET);
 
     // Update 
     if (flash == 0) {
