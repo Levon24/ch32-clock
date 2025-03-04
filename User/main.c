@@ -5,7 +5,7 @@
 #include "melody.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-#define _TIM2_CORECTION   10
+#define _TIM2_CORECTION   4
 #define _TIM2_PSC         ((SystemCoreClock / 1000) - 1)
 #define _TIM2_ARR         ((1000 - 1) + _TIM2_CORECTION)
 
