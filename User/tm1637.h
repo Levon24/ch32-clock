@@ -6,9 +6,9 @@
 #endif 
 
 /* Global defines */
-#define LED7SEG_PORT GPIOC
-#define LED7SEG_CLK GPIO_Pin_0
-#define LED7SEG_DIO GPIO_Pin_1
+#define LED7SEG_PORT  GPIOD
+#define LED7SEG_CLK   GPIO_Pin_2
+#define LED7SEG_DIO   GPIO_Pin_3
 
 #define TM1637_DISPLAY_LENGTH   6
 #define TM1637_BIT_DELAY_US     400

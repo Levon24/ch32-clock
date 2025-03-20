@@ -6,7 +6,7 @@
 #endif
 
 #define SPEAKER_PORT  GPIOD
-#define SPEAKER_PIN   GPIO_Pin_2
+#define SPEAKER_PIN   GPIO_Pin_0
 
 /* Octava */
 #define O0  0x00

@@ -5,14 +5,14 @@
 #include "melody.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-#define _TIM2_CORECTION   4
+#define _TIM2_CORECTION   0 // 4
 #define _TIM2_PSC         ((SystemCoreClock / 1000) - 1)
 #define _TIM2_ARR         ((1000 - 1) + _TIM2_CORECTION)
 
-#define BUTTON_SETTINGS   GPIO_Pin_3
-#define BUTTON_NEXT       GPIO_Pin_2
-#define BUTTON_UP         GPIO_Pin_7
-#define BUTTON_DOWN       GPIO_Pin_6
+#define BUTTON_SETTINGS   GPIO_Pin_1
+#define BUTTON_NEXT       GPIO_Pin_0
+#define BUTTON_UP         GPIO_Pin_3
+#define BUTTON_DOWN       GPIO_Pin_2
 #define BUTTON_PRESSED    0
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -36,29 +36,29 @@ void GPIO_InitPorts(void) {
   // Port C
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
   
-  // TM1637
-  GPIO_InitTypeDef GPIO_InitPortC01 = {0};
-  GPIO_InitPortC01.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1;
-  GPIO_InitPortC01.GPIO_Mode = GPIO_Mode_Out_OD;
-  GPIO_InitPortC01.GPIO_Speed = GPIO_Speed_30MHz;
-  GPIO_Init(GPIOC, &GPIO_InitPortC01);
-
   // Buttons
-  GPIO_InitTypeDef GPIO_InitPortC23 = {0};
-  GPIO_InitPortC23.GPIO_Pin = GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_6 | GPIO_Pin_7;
-  GPIO_InitPortC23.GPIO_Mode = GPIO_Mode_IPU;
-  GPIO_InitPortC23.GPIO_Speed = GPIO_Speed_30MHz;
-  GPIO_Init(GPIOC, &GPIO_InitPortC23);
+  GPIO_InitTypeDef GPIO_InitPortC = {0};
+  GPIO_InitPortC.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3;
+  GPIO_InitPortC.GPIO_Mode = GPIO_Mode_IPU;
+  GPIO_InitPortC.GPIO_Speed = GPIO_Speed_30MHz;
+  GPIO_Init(GPIOC, &GPIO_InitPortC);
 
   // Port D
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD, ENABLE);
 
-  // LED & Speaker
-  GPIO_InitTypeDef GPIO_InitPortD02 = {0};
-  GPIO_InitPortD02.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_2;
-  GPIO_InitPortD02.GPIO_Mode = GPIO_Mode_Out_PP;
-  GPIO_InitPortD02.GPIO_Speed = GPIO_Speed_30MHz;
-  GPIO_Init(GPIOD, &GPIO_InitPortD02);
+  // TM1637
+  GPIO_InitTypeDef GPIO_InitPortD0 = {0};
+  GPIO_InitPortD0.GPIO_Pin = GPIO_Pin_2 | GPIO_Pin_3;
+  GPIO_InitPortD0.GPIO_Mode = GPIO_Mode_Out_OD;
+  GPIO_InitPortD0.GPIO_Speed = GPIO_Speed_30MHz;
+  GPIO_Init(GPIOD, &GPIO_InitPortD0);
+
+  // Speaker, Led
+  GPIO_InitTypeDef GPIO_InitPortD1 = {0};
+  GPIO_InitPortD1.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_6;
+  GPIO_InitPortD1.GPIO_Mode = GPIO_Mode_Out_PP;
+  GPIO_InitPortD1.GPIO_Speed = GPIO_Speed_30MHz;
+  GPIO_Init(GPIOD, &GPIO_InitPortD1);
 }
 
 /**
@@ -523,7 +523,7 @@ int main(void) {
     tm1637_writeSegments(segments);
     
     // LED
-    //GPIO_WriteBit(GPIOD, GPIO_Pin_0, (flash == 1) ? Bit_SET : Bit_RESET);
+    GPIO_WriteBit(GPIOD, GPIO_Pin_6, (flash == 1) ? Bit_SET : Bit_RESET);
 
     // Update 
     if (flash == 0) {

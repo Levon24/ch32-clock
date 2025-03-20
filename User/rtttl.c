@@ -85,7 +85,7 @@ void rtttl_tick() {
   }
 
   if (ticks < length) {
-    GPIO_WriteBit(GPIOD, GPIO_Pin_2, (speaker && (ticks & 0x01) > 0) ? Bit_SET : Bit_RESET);
+    GPIO_WriteBit(SPEAKER_PORT, SPEAKER_PIN, (speaker && (ticks & 0x01) > 0) ? Bit_SET : Bit_RESET);
     ticks++;
   } else {
     if (ticks > 0) {
