@@ -18,12 +18,12 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 enum _state {
-  show_time, 
-  show_date,
+  display_time, 
+  display_date,
   setup_time,
   setup_date,
   setup_brightness,
-  setup_alarm_no,
+  setup_alarm_num,
   setup_alarm_time,
   setup_alarm_music
 };
