@@ -575,10 +575,7 @@ int main(void) {
   rtttl_play(0);
 
   while (1) {
-    Delay_Ms(85);
-
     uint16_t buttons = GPIO_ReadInputData(GPIOC);
-
     switch (state) {
       case display_time:
         displayTime(buttons);
@@ -617,11 +614,9 @@ int main(void) {
     // LED
     GPIO_WriteBit(GPIOD, GPIO_Pin_6, (flash == 1) ? Bit_SET : Bit_RESET);
 
-    // Update 
-    if (flash == 0) {
-      flash = 1;
-    } else {
-      flash = 0;
-    }
+    // Update
+    flash = (flash == 0) ? 1 : 0;
+
+    Delay_Ms(95);
   }
 }
