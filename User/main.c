@@ -15,6 +15,8 @@
 #define BUTTON_DOWN       GPIO_Pin_2
 #define BUTTON_PRESSED    0
 
+#define LED_PIN           GPIO_Pin_6
+
 ///////////////////////////////////////////////////////////////////////////////
 extern _clock_t clock;
 
@@ -33,32 +35,28 @@ extern uint8_t tm1637_brightness;
  * Init GPIO Ports
  */
 void GPIO_InitPorts(void) {
-  // Port C
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC | RCC_APB2Periph_GPIOD, ENABLE);
   
   // Buttons
-  GPIO_InitTypeDef GPIO_InitPortC = {0};
-  GPIO_InitPortC.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3;
-  GPIO_InitPortC.GPIO_Mode = GPIO_Mode_IPU;
-  GPIO_InitPortC.GPIO_Speed = GPIO_Speed_30MHz;
-  GPIO_Init(GPIOC, &GPIO_InitPortC);
-
-  // Port D
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD, ENABLE);
+  GPIO_InitTypeDef GPIO_Buttons = {0};
+  GPIO_Buttons.GPIO_Pin = BUTTON_SETTINGS | BUTTON_NEXT | BUTTON_UP | BUTTON_DOWN;
+  GPIO_Buttons.GPIO_Mode = GPIO_Mode_IPU;
+  GPIO_Buttons.GPIO_Speed = GPIO_Speed_30MHz;
+  GPIO_Init(GPIOC, &GPIO_Buttons);
 
   // TM1637
-  GPIO_InitTypeDef GPIO_InitPortD0 = {0};
-  GPIO_InitPortD0.GPIO_Pin = GPIO_Pin_2 | GPIO_Pin_3;
-  GPIO_InitPortD0.GPIO_Mode = GPIO_Mode_Out_OD;
-  GPIO_InitPortD0.GPIO_Speed = GPIO_Speed_30MHz;
-  GPIO_Init(GPIOD, &GPIO_InitPortD0);
+  GPIO_InitTypeDef GPIO_Display = {0};
+  GPIO_Display.GPIO_Pin = LED7SEG_CLK | LED7SEG_DIO;
+  GPIO_Display.GPIO_Mode = GPIO_Mode_Out_OD;
+  GPIO_Display.GPIO_Speed = GPIO_Speed_30MHz;
+  GPIO_Init(GPIOD, &GPIO_Display);
 
   // Speaker, Led
-  GPIO_InitTypeDef GPIO_InitPortD1 = {0};
-  GPIO_InitPortD1.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_6;
-  GPIO_InitPortD1.GPIO_Mode = GPIO_Mode_Out_PP;
-  GPIO_InitPortD1.GPIO_Speed = GPIO_Speed_30MHz;
-  GPIO_Init(GPIOD, &GPIO_InitPortD1);
+  GPIO_InitTypeDef GPIO_Output = {0};
+  GPIO_Output.GPIO_Pin = SPEAKER_PIN | LED_PIN;
+  GPIO_Output.GPIO_Mode = GPIO_Mode_Out_PP;
+  GPIO_Output.GPIO_Speed = GPIO_Speed_30MHz;
+  GPIO_Init(GPIOD, &GPIO_Output);
 }
 
 /**
@@ -150,7 +148,7 @@ int main(void) {
   rtttl_play(0);
 
   while (1) {
-    Delay_Ms(100);
+    Delay_Ms(85);
 
     uint16_t buttons = GPIO_ReadInputData(GPIOC);
 

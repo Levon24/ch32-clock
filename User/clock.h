@@ -14,7 +14,7 @@
 #define POSITION_MONTH   1
 #define POSITION_YEAR    2
 
-#define ALARMS           20
+#define ALARMS           21
 
 ///////////////////////////////////////////////////////////////////////////////
 enum _state {

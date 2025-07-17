@@ -56,11 +56,11 @@ void clock_tick() {
 
         clock.day++;
         if (clock.day > clock_monthDays()) {
-          clock.day = 0;
+          clock.day = 1;
 
           clock.month++;
           if (clock.month > 12) {
-            clock.month = 0;
+            clock.month = 1;
 
             clock.year++;
             if (clock.year > 99) {
